@@ -13,8 +13,8 @@ from conf.configure import Configure
 
 def load_features(feature_name):
 
-    train_path=Configure.features_path+'train_'+feature_name+'.pkl'
-    test_path=Configure.features_path+'test_'+feature_name+'.pkl'
+    train_path=os.path.join(Configure.features_path,'train_'+feature_name+'.pkl')
+    test_path=os.path.join(Configure.features_path,'test_'+feature_name+'.pkl')
 
     with open(train_path,'rb') as f:
         train = pickle.load(f)

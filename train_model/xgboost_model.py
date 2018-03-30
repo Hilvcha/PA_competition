@@ -17,17 +17,19 @@ def abs_convert(rand):
     return abs(rand)
 
 def model_train():
-    train,test,y_train,y_test=load_datasets()
+    train,test,train_label=load_datasets()
+
     Id=test['TERMINALNO']
     del train['TERMINALNO']
     del test['TERMINALNO']
-    x_train, x_val, y_train, y_val = train_test_split(train, y_train, test_size=0.2, random_state=100)
+    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
+    print('train:'+'\n'+train)
     dtrain = xgb.DMatrix(x_train, label=y_train)
     dval = xgb.DMatrix(x_val, label=y_val)
     param = {'learning_rate': 0.1,
              'n_estimators': 1000,
-             'max_depth': 1,
+             'max_depth': 2,
              'min_child_weight': 7,
              'gamma': 0,
              'subsample': 0.8,
@@ -47,7 +49,7 @@ def model_train():
     Pred = np.array(Pred)
     Pred = -Pred
     Pred = list(Pred)
-    submit_df=pd.merge(Id,Pred,on='TERMINALNO',how='left')
+    submit_df=pd.concat(Id,Pred,axis=1)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path,sep=',',index=None)
 
 

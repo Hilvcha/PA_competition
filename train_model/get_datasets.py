@@ -21,23 +21,32 @@ def load_datasets():
     #原始数据集
     train = pd.read_csv(Configure.train_data,encoding='utf8')
     test = pd.read_csv(Configure.test_data,encoding='utf8')
+
+
     y_train=feature_utils.get_label(train)
     y_test=feature_utils.get_label(test)
+
+    index_train=pd.Index(train['TERMINALNO'])
+    index_test=pd.Index(test['TERMINALNO'])
+    index_train=index_train.unique()
+    index_test=index_test.unique()
+
     #取出训练与测试集中的用户列
-    test,train=test['TERMINALNO'],train['TERMINALNO']
-    test,train=test.drop_duplicates(),train.drop_duplicates()
+    train=pd.DataFrame(index_train,index=index_train)
+    test=pd.DataFrame(index_test,index=index_test)
+
     #加载记载在configure列表中的特征，并且合并
     features_merged_dict = Configure.features
     for feature_name in Configure.features:
         print('pd merge',feature_name)
         train_feature, test_feature = data_utils.load_features(feature_name)
         train = pd.merge(train, train_feature,
-                         on=features_merged_dict[feature_name]['on'],
-                         how=features_merged_dict[feature_name]['how'])
+                         left_index=True,
+                         right_index=True)
         test = pd.merge(test, test_feature,
-                        on=features_merged_dict[feature_name]['on'],
-                        how=features_merged_dict[feature_name]['how'])
-    return train,test,y_train,y_test
+                        left_index=True,
+                        right_index=True)
+    return train,test,y_train
 
 
 

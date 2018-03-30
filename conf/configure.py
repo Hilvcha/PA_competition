@@ -9,21 +9,20 @@ import datetime
 
 
 class Configure(object):
-    base_path=''
-    train_data=''
-    test_data =''
+    base_path = os.path.abspath(os.path.join('.'))
+    train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
 
     # train_data = '/data/dm/train.csv'
     # test_data =  '/data/dm/test.csv'
     # 数据清洗后的路径
-    cleaned_path = ''
+    cleaned_path = os.path.join(base_path, 'cleaned')
     # 生成的特征的路径
-    features_path = ''
+    features_path = os.path.join(base_path, 'features')
     # 生成的模型可训练和预测的数据集
-    datasets_path = ''
+    datasets_path = os.path.join(base_path, 'datasets')
     # 最终结果csv存放处
-    submit_result_path=''
-
+    submit_result_path = os.path.abspath(os.path.join(base_path, 'model', 'submit.csv'))
     #需要merge的特征
     features = {
         #多次行程速度方差的均值
