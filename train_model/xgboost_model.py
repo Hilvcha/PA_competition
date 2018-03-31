@@ -53,9 +53,6 @@ def model_train():
     Pred = np.array(Pred)
 
     Pred = pd.Series(Pred, name='Pred', index=index_test)
-    print(Id, Pred)
-
-    print(Id.describe(), Pred.describe())
     submit_df = pd.concat([Id, Pred], axis=1)
     print(submit_df)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)

@@ -18,6 +18,36 @@ from utils import feature_utils, data_utils
 
 def load_datasets():
     # 原始数据集
+    dtypes_train = {
+        'TERMINALNO': 'uint32',
+        'TIME': 'uint16',
+        'TRIP_ID': 'uint8',
+        'LATITUDE': 'float32',
+        'LONGITUDE': 'float32',
+        'DIRECTION': 'uint8',
+        'HEIGHT': 'float32',
+        'SPEED': 'float32',
+        'CALLSTATE': 'uint8',
+        'Y': 'float32'
+    }
+    dtypes_test = {
+        'TERMINALNO': 'uint32',
+        'TIME': 'uint16',
+        'TRIP_ID': 'uint8',
+        'LATITUDE': 'float32',
+        'LONGITUDE': 'float32',
+        'DIRECTION': 'uint8',
+        'HEIGHT': 'float32',
+        'SPEED': 'float32',
+        'CALLSTATE': 'uint8',
+    }
+
+    train = pd.read_csv(Configure.train_data, encoding='utf8', dtype=dtypes_train)
+    test = pd.read_csv(Configure.test_data, encoding='utf8', dtype=dtypes_test)
+
+
+def load_datasets():
+    # 原始数据集
     train = pd.read_csv(Configure.train_data, encoding='utf8')
     test = pd.read_csv(Configure.test_data, encoding='utf8')
 
