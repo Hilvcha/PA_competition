@@ -10,11 +10,11 @@ import datetime
 
 class Configure(object):
     base_path = os.path.abspath(os.path.join('.'))
-    # train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
-    # test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    test_data = os.path.join(base_path, 'PINGAN-2018-test_demo.csv')
 
-    train_data = '/data/dm/train.csv'
-    test_data =  '/data/dm/test.csv'
+    # train_data = '/data/dm/train.csv'
+    # test_data =  '/data/dm/test.csv'
     # 数据清洗后的路径
     cleaned_path = os.path.join(base_path, 'cleaned')
     # 生成的特征的路径
@@ -27,6 +27,7 @@ class Configure(object):
     features = {
         #多次行程速度方差的均值
         'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
+
     }
 
 if __name__ == '__main__':

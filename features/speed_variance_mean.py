@@ -49,6 +49,7 @@ def wyj_speed_variance_mean():
     data_utils.save_features(train_data,test_data,'speed_variance_mean')
 
 
+
 def save_all_features():
 
     if 'speed_variance_mean' in Configure.features:
