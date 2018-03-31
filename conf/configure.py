@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 import sys
+
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
 
@@ -26,11 +27,11 @@ class Configure(object):
     # 需要merge的特征
     features = {
         # 多次行程速度方差的均值
-        #'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
+        # 'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
         # 每名用户的行程数
-        'trip_id_count' : {'on': 'TERMINALNO', 'how': 'left'},
-        #用户多次行程时间间隔的平均数
-        #'trip_id_interval_mean' : {'on': 'TERMINALNO', 'how': 'left'},
+        'trip_id_count': {'on': 'TERMINALNO', 'how': 'left'},
+        # 用户多次行程时间间隔的平均数
+        # 'trip_id_interval_mean': {'on': 'TERMINALNO', 'how': 'left'},
     }
 
 
@@ -43,5 +44,3 @@ if __name__ == '__main__':
     print(Configure.features_path)
     print(Configure.datasets_path)
     print(Configure.submit_result_path)
-
-
