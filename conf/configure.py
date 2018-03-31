@@ -15,7 +15,7 @@ class Configure(object):
     test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
 
     # train_data = '/data/dm/train.csv'
-    # test_data =  '/data/dm/test.csv'
+    # test_data = '/data/dm/test.csv'
     # 数据清洗后的路径
     cleaned_path = os.path.join(base_path, 'cleaned')
     # 生成的特征的路径
@@ -27,18 +27,16 @@ class Configure(object):
     # 需要merge的特征
     features = {
         # 多次行程速度方差的均值
-        # 'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
+        'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
         # 每名用户的行程数
         'trip_id_count': {'on': 'TERMINALNO', 'how': 'left'},
         # 用户多次行程时间间隔的平均数
-        # 'trip_id_interval_mean': {'on': 'TERMINALNO', 'how': 'left'},
+        'trip_id_interval_mean': {'on': 'TERMINALNO', 'how': 'left'},
     }
 
 
 if __name__ == '__main__':
     print('========== 当前项目目录 ==========')
-    # configure = Configure(os.path.abspath(os.path.join('..')))
-
     print(Configure.train_data)
     print(Configure.cleaned_path)
     print(Configure.features_path)
