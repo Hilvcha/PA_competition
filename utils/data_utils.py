@@ -1,3 +1,4 @@
+# coding: utf-8
 import os
 import sys
 
@@ -11,26 +12,25 @@ import numpy as np
 import pandas as pd
 from conf.configure import Configure
 
+
 def load_features(feature_name):
+    train_path = os.path.join(Configure.features_path, 'train_' + feature_name + '.pkl')
+    test_path = os.path.join(Configure.features_path, 'test_' + feature_name + '.pkl')
 
-    train_path=os.path.join(Configure.features_path,'train_'+feature_name+'.pkl')
-    test_path=os.path.join(Configure.features_path,'test_'+feature_name+'.pkl')
-
-    with open(train_path,'rb') as f:
+    with open(train_path, 'rb') as f:
         train = pickle.load(f)
-    with open(test_path,'rb') as f:
+    with open(test_path, 'rb') as f:
         test = pickle.load(f)
 
-    return train,test
+    return train, test
 
-def save_features(train,test,feature_name):
+
+def save_features(train, test, feature_name):
     if train is not None:
-        train_path=os.path.join(Configure.features_path,'train_'+feature_name+'.pkl')
-        with open(train_path,'wb') as f:
-            pickle.dump(train,f,-1)
-    if test is not None:
-        train_path = os.path.join(Configure.features_path,'test_'+feature_name+'.pkl')
+        train_path = os.path.join(Configure.features_path, 'train_' + feature_name + '.pkl')
         with open(train_path, 'wb') as f:
             pickle.dump(train, f, -1)
-
-
+    if test is not None:
+        train_path = os.path.join(Configure.features_path, 'test_' + feature_name + '.pkl')
+        with open(train_path, 'wb') as f:
+            pickle.dump(train, f, -1)
