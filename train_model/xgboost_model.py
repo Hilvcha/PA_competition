@@ -4,7 +4,6 @@ import sys
 
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
-import time
 
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -60,5 +59,4 @@ def model_train():
 
 if __name__ == '__main__':
     print('========== xgboost 模型训练 ==========')
-
     model_train()

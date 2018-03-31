@@ -5,17 +5,17 @@ import sys
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
 
-import time
-import datetime
+# import time
+# import datetime
 
 
 class Configure(object):
-    base_path = os.path.abspath(os.path.join('.'))
-    train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
-    test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    base_path = os.path.abspath(os.path.join(__file__, '../..'))
+    train_path = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    test_path = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
 
-    # train_data = '/data/dm/train.csv'
-    # test_data = '/data/dm/test.csv'
+    # train_path = '/data/dm/train.csv'
+    # test_path = '/data/dm/test.csv'
     # 数据清洗后的路径
     cleaned_path = os.path.join(base_path, 'cleaned')
     # 生成的特征的路径
@@ -37,7 +37,7 @@ class Configure(object):
 
 if __name__ == '__main__':
     print('========== 当前项目目录 ==========')
-    print(Configure.train_data)
+    print(Configure.train_path)
     print(Configure.cleaned_path)
     print(Configure.features_path)
     print(Configure.datasets_path)

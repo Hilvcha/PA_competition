@@ -17,4 +17,4 @@ def wyj_speed_variance_mean(train, test):
     test_data.fillna(0, inplace=True)
     test_data = test_data.groupby(["TERMINALNO"]).mean()
     # print(train_data.shape)
-    data_utils.save_features(train_data, test_data, "speed_variance_mean")
+    return train_data, test_data
