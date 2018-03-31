@@ -24,7 +24,7 @@ def load_datasets():
 
 
     y_train=feature_utils.get_label(train)
-    y_test=feature_utils.get_label(test)
+
 
     index_train=pd.Index(train['TERMINALNO'])
     index_test=pd.Index(test['TERMINALNO'])
@@ -46,7 +46,7 @@ def load_datasets():
         test = pd.merge(test, test_feature,
                         left_index=True,
                         right_index=True)
-    return train,test,y_train
+    return train,test,y_train,index_test
 
 
 

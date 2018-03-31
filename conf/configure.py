@@ -10,11 +10,11 @@ import datetime
 
 class Configure(object):
     base_path = os.path.abspath(os.path.join('.'))
-    train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
-    test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    # train_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
+    # test_data = os.path.join(base_path, 'PINGAN-2018-train_demo.csv')
 
-    # train_data = '/data/dm/train.csv'
-    # test_data =  '/data/dm/test.csv'
+    train_data = '/data/dm/train.csv'
+    test_data =  '/data/dm/test.csv'
     # 数据清洗后的路径
     cleaned_path = os.path.join(base_path, 'cleaned')
     # 生成的特征的路径
@@ -36,7 +36,5 @@ if __name__ == '__main__':
     print(Configure.features_path)
     print(Configure.datasets_path)
     print(Configure.submit_result_path)
-
-
 
 
