@@ -26,8 +26,11 @@ class Configure(object):
     # 需要merge的特征
     features = {
         # 多次行程速度方差的均值
-        'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
-
+        #'speed_variance_mean': {'on': 'TERMINALNO', 'how': 'left'},
+        # 每名用户的行程数
+        'trip_id_count' : {'on': 'TERMINALNO', 'how': 'left'},
+        #用户多次行程时间间隔的平均数
+        #'trip_id_interval_mean' : {'on': 'TERMINALNO', 'how': 'left'},
     }
 
 

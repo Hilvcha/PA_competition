@@ -36,24 +36,28 @@ def wyj_speed_variance_mean():
                                  aggfunc=[np.var], )
     test_data.fillna(0, inplace=True)
     test_data = test_data.groupby(['TERMINALNO']).mean()
-    # values：需要对哪些字段应用函数
-    # index：透视表的行索引(row)
-    # columns：透视表的列索引(column)
-    # aggfunc：应用什么函数
-    # fill_value：空值填充
-    # margins：添加汇总项
-
-    # train=train[['TERMINALNO','TRIP_ID','SPEED']].groupby(['TERMINALNO','TRIP_ID']).size()
-    # print(train)
-    # train=train[['TERMINALNO','SPEED']].agg(np.mean)
     data_utils.save_features(train_data, test_data, 'speed_variance_mean')
 
+# # 每名用户的行程数
+#         'trip_id_count' : {'on': 'TERMINALNO', 'how': 'left'},
+#         #用户多次行程时间间隔的平均数
+#         'trip_id_interval_mean' : {'on': 'TERMINALNO', 'how': 'left'},
+# TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
+
+def wyj_trip_id_count():
+    pass
+
+def  wyj_trip_id_interval_mean():
+    pass
 
 
 def save_all_features():
     if 'speed_variance_mean' in Configure.features:
         wyj_speed_variance_mean()
-
+    if 'trip_id_count' in Configure.features:
+        wyj_trip_id_count()
+    if 'trip_id_interval_mean' in Configure.features:
+        wyj_trip_id_interval_mean()
 
 if __name__ == "__main__":
     print("****************** feature **********************")
