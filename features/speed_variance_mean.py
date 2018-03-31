@@ -14,7 +14,6 @@ warnings.filterwarnings('ignore')
 import numpy as np
 import pandas as pd
 
-from sklearn.preprocessing import LabelEncoder
 from conf.configure import Configure
 from utils import data_utils, feature_utils
 
@@ -49,7 +48,6 @@ def wyj_trip_id_count():
 
 def  wyj_trip_id_interval_mean():
     pass
-
 
 def save_all_features():
     if 'speed_variance_mean' in Configure.features:
