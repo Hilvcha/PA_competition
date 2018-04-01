@@ -19,5 +19,7 @@ mkdir ./_PA_competition/model
 sed -r 's/os\.path\.join\(base_path, \"train\.csv\"\)/\"\/data\/dm\/train\.csv\"/g' _PA_competition/conf/configure.py -i
 sed -r 's/os\.path\.join\(base_path, \"test\.csv\"\)/\"\/data\/dm\/test\.csv\"/g' _PA_competition/conf/configure.py -i
 
+
+# zip it and delete (useless for Windows)
 # zip -r _PA_competition.zip ./_PA_competition
 # rm -rf ./_PA_competition

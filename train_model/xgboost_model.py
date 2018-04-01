@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 from sklearn.metrics import auc, roc_curve
-from train_model.get_datasets import load_datasets
+from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
 from utils import feature_utils
 
@@ -19,8 +19,8 @@ def abs_convert(rand):
     return abs(rand)
 
 
-def model_train():
-    train, test, train_label, index_test = load_datasets()
+def model_train(trainSet, testSet):
+    train, test, train_label, index_test = merge_datasets(trainSet, testSet)
     print(train, test, train_label)
     test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
     Id = test['Id']
@@ -39,8 +39,7 @@ def model_train():
              'colsample_bytree': 0.8,
              'eta': 0.05,
              'silent': 1,
-             'objective': 'reg:linear'
-             }
+             'objective': 'reg:linear'}
 
     num_round = 70
     plst = list(param.items())
@@ -59,4 +58,4 @@ def model_train():
 
 if __name__ == '__main__':
     print('========== xgboost 模型训练 ==========')
-    model_train()
+    # model_train()

@@ -5,7 +5,7 @@ from unittest import TestCase, main
 from random import randint
 
 from conf.configure import Configure
-from functions.read_data import read_data
+from input.read_data import read_data
 from functions.trip_id_count import wyj_trip_id_count
 
 
