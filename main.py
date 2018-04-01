@@ -13,4 +13,4 @@ if __name__ == "__main__":
 
     save_all_features(trainSet, testSet)
     
-    # model_train(trainSet, testSet)
+    model_train(trainSet, testSet)
