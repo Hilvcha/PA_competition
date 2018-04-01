@@ -19,11 +19,13 @@ class TestTripIdCount(TestCase):
         :return:
         """
         rand = randint(1, 100)
+        # rand = 1
         print(rand)
         cnt = 0
         for data in self.trainSet["TERMINALNO"]:
             if data == rand:
                 cnt += 1
+        # print(cnt)
         value = self.trainData.iloc[rand-1].values[0]
         self.assertEqual(cnt, value)
 

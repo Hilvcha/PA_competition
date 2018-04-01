@@ -25,12 +25,11 @@ def model_train(trainSet, testSet):
     # print('test.axes',test.axes)
     # print('train_label',train_label)
 
-
     test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
     Id = test['Id']
     del train['TERMINALNO']
     del test['Id']
-    print(train_label,train)
+    print(train_label, train)
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
     dtrain = xgb.DMatrix(x_train, label=y_train)
