@@ -21,8 +21,8 @@ def abs_convert(rand):
 
 def model_train(trainSet, testSet):
     train, test, train_label, index_test = merge_datasets(trainSet, testSet)
-    #A print('train.axes',train)
-    # print('test.axes',test.axes)
+    # print('train.',train)
+    # print('test.',test.axes)
     # print('train_label',train_label)
 
     test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
@@ -36,7 +36,7 @@ def model_train(trainSet, testSet):
     dval = xgb.DMatrix(x_val, label=y_val)
     param = {'learning_rate': 0.1,
              'n_estimators': 1000,
-             'max_depth': 2,
+             'max_depth': 3,
              'min_child_weight': 7,
              'gamma': 0,
              'subsample': 0.8,

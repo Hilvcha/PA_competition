@@ -34,10 +34,6 @@ def read_data(train_path, test_path):
     train.TIME = pd.to_datetime(train.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
     test.TIME = pd.to_datetime(test.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
 
-    # 对数据按照时间顺序排序
-
-    train = train.sort_values(by='TIME')
-    test = test.sort_values(by='TIME')
 
 
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
