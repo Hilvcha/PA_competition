@@ -20,11 +20,13 @@ class TestTripIdCount(TestCase):
         """
         rand = randint(1, 100)
         # rand = 1
+        # for rand in range(100)
         print(rand)
-        cnt = 0
-        for data in self.trainSet["TERMINALNO"]:
+        tmp = set()
+        for data, trip_id in zip(self.trainSet["TERMINALNO"], self.trainSet["TRIP_ID"]):
             if data == rand:
-                cnt += 1
+                tmp.add(trip_id)
+        cnt = len(tmp)
         # print(cnt)
         value = self.trainData.iloc[rand-1].values[0]
         self.assertEqual(cnt, value)
@@ -36,10 +38,11 @@ class TestTripIdCount(TestCase):
         """
         rand = randint(1, 100)
         print(rand)
-        cnt = 0
-        for data in self.testSet["TERMINALNO"]:
+        tmp = set()
+        for data, trip_id in zip(self.testSet["TERMINALNO"], self.testSet["TRIP_ID"]):
             if data == rand:
-                cnt += 1
+                tmp.add(trip_id)
+        cnt = len(tmp)
         value = self.testData.iloc[rand-1].values[0]
         self.assertEqual(cnt, value)
 
