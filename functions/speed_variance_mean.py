@@ -4,18 +4,13 @@ import numpy as np
 
 
 def wyj_speed_variance_mean(train, test):
+    train_data=train[['TERMINALNO','TRIP_ID','SPEED']].groupby(['TERMINALNO','TRIP_ID'], as_index=False).var()
+    train_data=train_data[['TERMINALNO','SPEED']].groupby('TERMINALNO', as_index=True).mean()
 
-    train_data = train.pivot_table(values=["SPEED"],
-                                   index=["TERMINALNO", "TRIP_ID"],
-                                   aggfunc=[np.var])
-    train_data.fillna(0, inplace=True)
-    train_data = train_data.groupby(["TERMINALNO"]).mean()
-    # print(train_data)
+    test_data = test[['TERMINALNO', 'TRIP_ID', 'SPEED']].groupby(['TERMINALNO', 'TRIP_ID'], as_index=False).var()
+    test_data = test_data[['TERMINALNO', 'SPEED']].groupby('TERMINALNO', as_index=True).mean()
+    train_data=train_data.rename(columns={'SPEED':'SPEED_VAR_MEAN'})
+    test_data=test_data.rename(columns={'SPEED':'SPEED_VAR_MEAN'})
 
-    test_data = test.pivot_table(values=["SPEED"],
-                                 index=["TERMINALNO", "TRIP_ID"],
-                                 aggfunc=[np.var])
-    test_data.fillna(0, inplace=True)
-    test_data = test_data.groupby(["TERMINALNO"]).mean()
-    # print(train_data.shape)
+
     return train_data, test_data

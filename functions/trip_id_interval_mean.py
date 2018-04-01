@@ -24,7 +24,6 @@ def wyj_trip_id_interval_mean(train, test):
             train_value[0]
         tmp.append(train_mean)
     train_data = pd.DataFrame(tmp, index=[i + 1 for i in range(len(tmp))])
-    print(train_data)
     train_data.rename(columns={0: "INTERVAL_MEAN"}, inplace=True)
     train_data.rename_axis("TERMINALNO",inplace=True)
 

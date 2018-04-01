@@ -12,4 +12,5 @@ if __name__ == "__main__":
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
     save_all_features(trainSet, testSet)
+    
     model_train(trainSet, testSet)

@@ -21,11 +21,16 @@ def abs_convert(rand):
 
 def model_train(trainSet, testSet):
     train, test, train_label, index_test = merge_datasets(trainSet, testSet)
-    print(train, test, train_label)
+    # print('train.axes',train)
+    # print('test.axes',test.axes)
+    # print('train_label',train_label)
+
+
     test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
     Id = test['Id']
     del train['TERMINALNO']
     del test['Id']
+    print(train_label,train)
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
     dtrain = xgb.DMatrix(x_train, label=y_train)
@@ -52,7 +57,6 @@ def model_train(trainSet, testSet):
 
     Pred = pd.Series(Pred, name='Pred', index=index_test)
     submit_df = pd.concat([Id, Pred], axis=1)
-    print(submit_df)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)
 
 
