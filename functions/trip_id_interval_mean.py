@@ -17,6 +17,9 @@ def wyj_trip_id_interval_mean(train, test):
     for i, value in td1:
         train_value = value["TIME"].values
         train_value.sort()
+        # if i == 1:
+        #     print(train_value)
+        #     print(train_value[1:] - train_value[:-1])
         train_mean = sum(train_value[1:] - train_value[:-1]) / (len(train_value) - 1) if len(train_value) > 1 else \
             train_value[0]
         tmp.append(train_mean)

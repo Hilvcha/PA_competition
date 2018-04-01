@@ -45,12 +45,6 @@ def load_datasets():
     train = pd.read_csv(Configure.train_path, encoding='utf8', dtype=dtypes_train)
     test = pd.read_csv(Configure.test_path, encoding='utf8', dtype=dtypes_test)
 
-
-def load_datasets():
-    # 原始数据集
-    train = pd.read_csv(Configure.train_path, encoding='utf8')
-    test = pd.read_csv(Configure.test_path, encoding='utf8')
-
     y_train = feature_utils.get_label(train)
 
     index_train = pd.Index(train['TERMINALNO'])

@@ -9,24 +9,34 @@ from functions.read_data import read_data
 from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
 
 
+def mean(x):
+    return sum(x) / len(x)
+
+
 class TestTripIdCount(TestCase):
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
     trainData, testData = wyj_trip_id_interval_mean(trainSet, testSet)
 
-    def test1(self):
+    def testTrain(self):
         """
         test trip
         :return:
         """
-        rand = randint(1, 100)
+        # rand = randint(1, 100)
+        rand = 1
         print(rand)
-        cnt = 0
-        frame = [time if num == rand else 0 for num, time in self.trainSet["TERMINALNO", "TIME"]]
-        print(frame)
-        # value = self.trainData.iloc[rand-1].values[0]
-        # self.assertEqual(cnt, value)
+        # print(self.trainSet["TERMINALNO"])
+        times = [time for num, time in zip(self.trainSet["TERMINALNO"], self.trainSet["TIME"]) if num == rand]
 
-    # def test2(self):
+        times.sort()
+        print(times)
+        interval = [t1 - t2 for t1, t2 in zip(times[1:], times[:-1])]
+        print(interval)
+        mean_value = mean(interval)
+        value = self.trainData.iloc[rand - 1].values[0]
+        self.assertEqual(mean_value, value)
+
+    # def testTest(self):
     #     """
     #     test trip
     #     :return:
