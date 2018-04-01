@@ -5,10 +5,10 @@ import sys
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
 
+# TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
+
 from conf.configure import Configure
 from utils import data_utils
-
-# TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
 
 from functions.trip_id_count import wyj_trip_id_count
 from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
@@ -21,7 +21,7 @@ def save_all_features(train, test):
         'speed_variance_mean': wyj_speed_variance_mean,
         'trip_id_count': wyj_trip_id_count,
         'trip_id_interval_mean': wyj_trip_id_interval_mean,
-        'speed_first_mean': wyj_speed_first_mean
+        'speed_first_mean': wyj_speed_first_mean,
     }
     for name in Configure.features:
         data_utils.save_features(*funcs[name](train, test), name)
