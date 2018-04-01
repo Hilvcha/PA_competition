@@ -38,4 +38,5 @@ def merge_datasets(train, test):
         test = pd.merge(test, test_feature,
                         left_index=True,
                         right_index=True)
+    print(train.shape,test.shape, y_train.shape, index_test.shape)
     return train, test, y_train, index_test

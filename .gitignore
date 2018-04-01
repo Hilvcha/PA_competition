@@ -11,7 +11,8 @@ cleaned/
 features/
 
 # origin data files: you can get from start.sh
-
+train.csv
+test.csv
 
 # generated from commit.sh
 _PA_competition/

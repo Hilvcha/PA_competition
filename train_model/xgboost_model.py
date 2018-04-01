@@ -21,7 +21,7 @@ def abs_convert(rand):
 
 def model_train(trainSet, testSet):
     train, test, train_label, index_test = merge_datasets(trainSet, testSet)
-    # print('train.axes',train)
+    #A print('train.axes',train)
     # print('test.axes',test.axes)
     # print('train_label',train_label)
 
@@ -29,7 +29,7 @@ def model_train(trainSet, testSet):
     Id = test['Id']
     del train['TERMINALNO']
     del test['Id']
-    print(train_label, train)
+    print(train_label.shape, train.shape)
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
     dtrain = xgb.DMatrix(x_train, label=y_train)
