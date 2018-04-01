@@ -29,7 +29,6 @@ def merge_datasets(train, test):
     test = pd.DataFrame(index_test, index=index_test)
 
     # 加载记载在configure列表中的特征，并且合并
-    features_merged_dict = Configure.features
     for feature_name in Configure.features:
         print('pd merge', feature_name)
         train_feature, test_feature = data_utils.load_features(feature_name)

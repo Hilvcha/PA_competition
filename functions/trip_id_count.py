@@ -10,10 +10,11 @@ def wyj_trip_id_count(train, test):
     :return:
     """
     train_data = train.groupby(["TERMINALNO"])["TERMINALNO"].count()
-    train_df = pd.DataFrame(train_data).rename({"TERMINALNO": "TRIP_ID_COUNT"}, axis='columns')
+    train_df = pd.DataFrame(train_data)
+    train_df.rename(columns={"TERMINALNO": "TRIP_ID_COUNT"}, inplace=True)
 
     test_data = test.groupby(["TERMINALNO"])["TERMINALNO"].count()
-    test_df = pd.DataFrame(test_data).rename({"TERMINALNO": "TRIP_ID_COUNT"}, axis='columns')
+    test_df = pd.DataFrame(test_data)
+    test_df.rename(columns={"TERMINALNO": "TRIP_ID_COUNT"}, inplace=True)
 
-    # print(train_df)
     return train_df, test_df

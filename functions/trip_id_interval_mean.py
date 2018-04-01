@@ -23,9 +23,11 @@ def wyj_trip_id_interval_mean(train, test):
         train_mean = sum(train_value[1:] - train_value[:-1]) / (len(train_value) - 1) if len(train_value) > 1 else \
             train_value[0]
         tmp.append(train_mean)
-    train_data = pd.DataFrame(tmp, index=[i + 1 for i in range(len(tmp))]).rename({0: "INTERVAL_MEAN"},
-                                                                                  axis='columns').rename_axis(
-        "TERMINALNO")
+    train_data = pd.DataFrame(tmp, index=[i + 1 for i in range(len(tmp))])
+    print(train_data)
+    train_data.rename(columns={0: "INTERVAL_MEAN"}, inplace=True)
+    train_data.rename_axis("TERMINALNO",inplace=True)
+
     # print(train_data)
 
     test_data = test.pivot_table(values=["TIME"],
@@ -38,8 +40,8 @@ def wyj_trip_id_interval_mean(train, test):
         test_mean = sum(test_value[1:] - test_value[:-1]) / (len(test_value) - 1) if len(test_value) > 1 else \
             test_value[0]
         tmp.append(test_mean)
-    test_data = pd.DataFrame(tmp, index=[i + 1 for i in range(len(tmp))]).rename({0: "INTERVAL_MEAN"},
-                                                                                 axis='columns').rename_axis(
-        "TERMINALNO")
+    test_data = pd.DataFrame(tmp, index=[i + 1 for i in range(len(tmp))])
+    test_data.rename(columns={0: "INTERVAL_MEAN"}, inplace=True)
+    test_data.rename_axis("TERMINALNO", inplace=True)
 
     return train_data, test_data

@@ -7,6 +7,7 @@ cp -r conf ./_PA_competition
 cp -r functions ./_PA_competition
 cp -r train_model ./_PA_competition
 cp -r utils ./_PA_competition
+cp -r input ./_PA_competition
 
 # files
 cp main.py ./_PA_competition

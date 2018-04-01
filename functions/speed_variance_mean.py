@@ -4,6 +4,7 @@ import numpy as np
 
 
 def wyj_speed_variance_mean(train, test):
+
     train_data = train.pivot_table(values=["SPEED"],
                                    index=["TERMINALNO", "TRIP_ID"],
                                    aggfunc=[np.var])
