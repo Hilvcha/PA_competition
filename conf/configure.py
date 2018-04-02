@@ -31,8 +31,8 @@ class Configure(object):
         'trip_id_count',
         # 用户多次行程时间间隔的平均数
         # 'trip_id_interval_mean',
-        # 用户第一次行程速度的平均数
-        'speed_first_mean',
+        # 用户最后一次行程速度的平均数
+        'speed_final_mean',
         # 行程时间差&中行程方向变化方差&方向无法获取次数
         'time_gap_direction_change_feat',
         # 通话状态
