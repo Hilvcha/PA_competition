@@ -34,11 +34,18 @@ def read_data(train_path, test_path):
     train.TIME = pd.to_datetime(train.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
     test.TIME = pd.to_datetime(test.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
 
+    # 对数据按照时间顺序排序
+    train.sort_values(by=['TERMINALNO','TIME'],inplace=True)
+    test.sort_values(by=['TERMINALNO','TIME'],inplace=True)
 
+    #删除只有一分钟记录的行程
+    train_data=train[['TERMINALNO','TRIP_ID','HEIGHT']].groupby(['TERMINALNO','TRIP_ID'],as_index=False).count()
+    train_data=train_data[train_data['HEIGHT']>1]
+    del train_data['HEIGHT']
+    train=pd.merge(train_data,train,on=['TERMINALNO','TRIP_ID'],how='left',)
 
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
     #
     #     t=train[['TERMINALNO','TRIP_ID']].groupby('TERMINALNO').agg(lambda arr: arr.iloc[0])
     #     print(t)
-
     return train, test
