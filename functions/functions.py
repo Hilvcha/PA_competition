@@ -8,7 +8,7 @@ sys.path.append(module_path)
 # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
 
 from conf.configure import Configure
-from utils import data_utils
+from utils.data_utils import save_features
 
 from functions.trip_id_count import wyj_trip_id_count
 from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
@@ -28,7 +28,7 @@ def save_all_features(train, test):
         'callstate_feat': rxd_callstate_feat,
     }
     for name in Configure.features:
-        data_utils.save_features(*funcs[name](train, test), name)
+        save_features(*funcs[name](train, test), name)
 
 
 if __name__ == "__main__":
