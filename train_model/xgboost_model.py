@@ -9,53 +9,51 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.metrics import auc, roc_curve
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
-from utils import feature_utils
 
 
 def abs_convert(rand):
     return abs(rand)
 
 
-def model_train(trainSet, testSet):
-    train, test, train_label, index_test = merge_datasets(trainSet, testSet)
-    # print('train.', train.axes)
-    # print('test.', test.axes)
-    # print('train_label',train_label)
-
-    test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
-    Id = test['Id']
-    del train['TERMINALNO']
-    del test['Id']
+def model_train(train_set, test_set):
+    train, test, train_label, test_index = merge_datasets(train_set, test_set)
+    user_id = test.pop('TERMINALNO')
+    train.drop(['TERMINALNO'], axis=1, inplace=True)
     print(train_label.shape, train.shape)
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
-    dtrain = xgb.DMatrix(x_train, label=y_train)
-    dval = xgb.DMatrix(x_val, label=y_val)
-    param = {'learning_rate': 0.1,
-             'n_estimators': 1000,
-             'max_depth': 3,
-             'min_child_weight': 7,
-             'gamma': 0,
-             'subsample': 0.8,
-             'colsample_bytree': 0.8,
-             'eta': 0.05,
-             'silent': 1,
-             'objective': 'reg:linear'}
+    d_train = xgb.DMatrix(x_train, label=y_train)
+    # print(d_train)
+    d_val = xgb.DMatrix(x_val, label=y_val)
+    param = {
+        'learning_rate': 0.1,
+        'n_estimators': 1000,
+        # 'max_depth': 3,
+        'min_child_weight': 7,
+        'gamma': 0,
+        'subsample': 0.8,
+        'colsample_bytree': 0.8,
+        'eta': 0.05,
+        'silent': 1,
+        'objective': 'reg:linear',
+        'eval_metric': 'auc'
+    }
 
-    num_round = 70
-    plst = list(param.items())
-    plst += [('eval_metric', 'auc')]
-    evallist = [(dval, 'eval'), (dtrain, 'train')]
-    bst = xgb.train(plst, dtrain, num_round, evallist, early_stopping_rounds=100)
-    dtest = xgb.DMatrix(test)
-    Pred = bst.predict(dtest)
-    Pred = np.array(Pred)
+    num_round = 100
+    eval_list = [(d_val, 'eval'), (d_train, 'train')]
+    bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
+    d_test = xgb.DMatrix(test)
+    prediction = bst.predict(d_test)
+    # 这里会否有更好的拼接方式？
+    pred_arr = np.array(prediction)
+    pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
+    submit_df = pd.concat([user_id, pred_series], axis=1)
+    # print(submit_df)
 
-    Pred = pd.Series(Pred, name='Pred', index=index_test)
-    submit_df = pd.concat([Id, Pred], axis=1)
+    submit_df.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
+    # print(submit_df)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)
 
 

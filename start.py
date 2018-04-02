@@ -26,6 +26,6 @@ if __name__ == '__main__':
     del_last_coln('train.csv', 'test.csv')
 
     # generate data directories
-    for name in ['features', 'datasets', 'cleaned']:
+    for name in ['features', 'datasets', 'cleaned', 'model']:
         if not os.path.exists(name):
             os.mkdir(name)

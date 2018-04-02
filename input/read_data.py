@@ -1,6 +1,6 @@
 # coding : utf-8
 import pandas as pd
-from utils.feature_utils import time_help
+from utils.feature_utils import time_reform
 
 
 def read_data(train_path, test_path):
@@ -31,10 +31,8 @@ def read_data(train_path, test_path):
     test = pd.read_csv(test_path, encoding='utf8')
 
     # 将数据集中的时间戳转化为时间
-    train.TIME = pd.to_datetime(train.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
-    test.TIME = pd.to_datetime(test.TIME.apply(time_help), format='%Y-%m-%d %H:%M:%S')
-
-
+    train.TIME = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
+    test.TIME = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
 
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
     #

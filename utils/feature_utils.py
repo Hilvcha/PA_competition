@@ -9,9 +9,9 @@ def get_label(df):
 
 
 # 时间戳转化
-def time_help(x):
-    timeArray = time.localtime(x)
-    return time.strftime('%Y-%m-%d %H:%M:%S', timeArray)
+def time_reform(x):
+    time_array = time.localtime(x)
+    return time.strftime('%Y-%m-%d %H:%M:%S', time_array)
 
 
 # 对数据按照时间顺序排序
@@ -26,7 +26,7 @@ def fun_direction(arr):
     ss = []
     m = (len(arr) - 1)
     try:
-        if (m == 0):
+        if m == 0:
             return 0
         mean_d = (abs(arr.iloc[-1] - arr.iloc[0]) % 360) / m
         for i in range(len(arr) - 1):
@@ -40,6 +40,6 @@ def fun_direction(arr):
 def fun_direction_none(arr):
     ll = 0
     for i in range(len(arr)):
-        if (arr.iloc[i] == -1):
+        if arr.iloc[i] == -1:
             ll += 1
     return ll
