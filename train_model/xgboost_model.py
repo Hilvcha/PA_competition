@@ -21,8 +21,8 @@ def abs_convert(rand):
 
 def model_train(trainSet, testSet):
     train, test, train_label, index_test = merge_datasets(trainSet, testSet)
-    # print('train.',train)
-    # print('test.',test.axes)
+    # print('train.', train.axes)
+    # print('test.', test.axes)
     # print('train_label',train_label)
 
     test.rename(columns={'TERMINALNO': 'Id'}, inplace=True)

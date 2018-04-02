@@ -12,4 +12,6 @@ def wyj_speed_first_mean(train, test):
     test_data = test[['TERMINALNO', 'TRIP_ID', 'SPEED']].groupby(['TERMINALNO', 'TRIP_ID'],as_index=False).mean()
     test_data = test_data[['TERMINALNO', 'SPEED']].groupby(['TERMINALNO']).agg(lambda arr: arr.iloc[0])
 
+    train_data.rename(columns={'SPEED':'SPEED_FIRST_MEAN'},inplace=True)
+    test_data.rename(columns={'SPEED':'SPEED_FIRST_MEAN'},inplace=True)
     return train_data,test_data
