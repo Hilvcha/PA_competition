@@ -22,6 +22,8 @@ or
 
     python add_function.py <your-function-name> -d "some descriptions"
 
+after that you can could
+
 ## How to commit (to PINGAN platform)
 
 run with git Bash:
@@ -31,5 +33,13 @@ run with git Bash:
 then zip the _PA_competition directory, and commit it.
 
 > Note: You should still check out the configure.py
+
+## features 特征的分类
+
+与时间有关的：
+
+与通话状态有关的：
+
+与位置有关的：
 
 ## Performance

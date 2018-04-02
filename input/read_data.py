@@ -1,6 +1,6 @@
 # coding : utf-8
 import pandas as pd
-from utils.feature_utils import time_help
+from utils.feature_utils import time_reform
 
 
 def read_data(train_path, test_path):

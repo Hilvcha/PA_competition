@@ -10,6 +10,7 @@ __init__.py
 datasets/
 cleaned/
 features/
+model/
 
 # origin data files: you can get from start.sh
 train.csv
