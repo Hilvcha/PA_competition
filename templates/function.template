@@ -1,0 +1,13 @@
+# coding : utf-8
+
+
+def {{ name }}(train, test):
+    """
+        your description here.
+    :param train:
+    :param test:
+    :return:
+    """
+    train_res = train
+    test_res = test
+    return train_res, test_res

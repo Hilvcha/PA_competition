@@ -3,6 +3,7 @@ venv/
 .idea/
 __pycache__/
 __init__.py
+!templates/__init__.py
 .DS_Store
 
 # generated data directories

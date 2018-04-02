@@ -5,10 +5,10 @@ import sys
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
 
+# TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
+
 from conf.configure import Configure
 from utils import data_utils
-
-# TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
 
 from functions.trip_id_count import wyj_trip_id_count
 from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
