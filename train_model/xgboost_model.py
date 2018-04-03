@@ -11,11 +11,27 @@ import pandas as pd
 import xgboost as xgb
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
+import time
+
+from functools import wraps
 
 
+def timethis(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        r = func(*args, **kwargs)
+        end = time.perf_counter()
+        print('{}.{}:{}'.format(func.__module__, func.__name__, end - start))
+        return r
+
+    return wrapper
+
+
+@timethis
 def model_train(train_set, test_set):
     train, test, train_label, test_index = merge_datasets(train_set, test_set)
-    print(train.head(3))
+    # print(train.head(3))
     print('train.', train.axes)
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
@@ -29,8 +45,8 @@ def model_train(train_set, test_set):
     param = {
         'learning_rate': 0.1,
         'n_estimators': 1000,
-        # 'max_depth': 3,
-        'min_child_weight': 7,
+        'max_depth': 6,
+        'min_child_weight': 6,
         'gamma': 0,
         'subsample': 0.8,
         'colsample_bytree': 0.8,

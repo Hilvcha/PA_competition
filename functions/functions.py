@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 import sys
+import time
 
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
@@ -17,7 +18,22 @@ from functions.speed_final_mean import wyj_speed_final_mean
 from functions.time_direction_change_feat import rxd_time_gap_direction_change_feat
 from functions.callstate_feat import rxd_callstate_feat
 
+from functools import wraps
 
+
+def timethis(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        r = func(*args, **kwargs)
+        end = time.perf_counter()
+        print('{}.{}:{}'.format(func.__module__, func.__name__, end - start))
+        return r
+
+    return wrapper
+
+
+@timethis
 def save_all_features(train, test):
     funcs = {
         'speed_variance_mean': wyj_speed_variance_mean,
