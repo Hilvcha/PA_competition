@@ -14,3 +14,5 @@ if __name__ == "__main__":
     save_all_features(trainSet, testSet)
     
     model_train(trainSet, testSet)
+
+    print("****************** end at:",time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),'******************')
