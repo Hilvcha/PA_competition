@@ -10,38 +10,28 @@ sys.path.append(module_path)
 
 from conf.configure import Configure
 from utils.data_utils import save_features
+from utils.feature_utils import time_this
 
-from functions.trip_id_count import wyj_trip_id_count
-from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
-from functions.speed_variance_mean import wyj_speed_variance_mean
-from functions.speed_final_mean import wyj_speed_final_mean
-from functions.time_direction_change_feat import rxd_time_gap_direction_change_feat
-from functions.callstate_feat import rxd_callstate_feat
-
-from functools import wraps
-
-
-def timethis(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        r = func(*args, **kwargs)
-        end = time.perf_counter()
-        print('{}.{}:{} seconds'.format(func.__module__, func.__name__, round(end - start , 2)))
-        return r
-
-    return wrapper
+from functions.trip_id_count import trip_id_count
+from functions.trip_id_interval_mean import trip_id_interval_mean
+from functions.speed_variance_mean import speed_variance_mean
+from functions.speed_final_mean import speed_final_mean
+from functions.time_direction_change_feat import time_gap_direction_change_feat
+from functions.callstate_feat import callstate_feat
+from functions.calling_time import calling_time
 
 
-@timethis
+@time_this
 def save_all_features(train, test):
     funcs = {
-        'speed_variance_mean': wyj_speed_variance_mean,
-        'trip_id_count': wyj_trip_id_count,
-        'trip_id_interval_mean': wyj_trip_id_interval_mean,
-        'speed_final_mean': wyj_speed_final_mean,
-        'time_gap_direction_change_feat': rxd_time_gap_direction_change_feat,
-        'callstate_feat': rxd_callstate_feat,
+        'speed_variance_mean': speed_variance_mean,
+        'trip_id_count': trip_id_count,
+        'trip_id_interval_mean': trip_id_interval_mean,
+        'speed_final_mean': speed_final_mean,
+        'time_gap_direction_change_feat': time_gap_direction_change_feat,
+        # 通话时间(在总行程时间中的占比)
+        "calling_time": calling_time,
+        'callstate_feat': callstate_feat,
     }
     for name in Configure.features:
         save_features(*funcs[name](train, test), name)

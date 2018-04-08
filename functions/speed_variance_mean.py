@@ -1,9 +1,8 @@
 # coding : utf-8
-from utils import data_utils
-import numpy as np
+# created by wyj
 
 
-def wyj_speed_variance_mean(train, test):
+def speed_variance_mean(train, test):
     train_data = train[['TERMINALNO', 'TRIP_ID', 'SPEED']].groupby(['TERMINALNO', 'TRIP_ID'], as_index=False).var()
     train_data = train_data[['TERMINALNO', 'SPEED']].groupby('TERMINALNO', as_index=True).mean()
 

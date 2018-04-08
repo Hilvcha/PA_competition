@@ -1,5 +1,17 @@
 # coding: utf-8
 import time
+from functools import wraps
+
+
+def time_this(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        r = func(*args, **kwargs)
+        end = time.perf_counter()
+        print('{}.{}:{} seconds'.format(func.__module__, func.__name__, round(end - start, 2)))
+        return r
+    return wrapper
 
 
 # 取得目标向量

@@ -1,7 +1,9 @@
+# coding: utf-8
+# made by rxd
 import pandas as pd
 
 
-def rxd_callstate_feat(train, test):
+def callstate_feat(train, test):
     train_data = train[['TERMINALNO', 'TRIP_ID', 'CALLSTATE']]
     test_data = test[['TERMINALNO', 'TRIP_ID', 'CALLSTATE']]
 

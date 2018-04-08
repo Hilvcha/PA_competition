@@ -1,16 +1,15 @@
+# coding: utf-8
+# created by rxd
 import pandas as pd
 from utils.feature_utils import fun_direction, fun_direction_none
 
 
-def rxd_time_gap_direction_change_feat(train, test):
-
+def time_gap_direction_change_feat(train, test):
     # 取方向缺失次数
     train_1 = train[['TERMINALNO', 'TRIP_ID', 'DIRECTION']].groupby(['TERMINALNO', 'TRIP_ID'],
-                                                                              as_index=False).agg(
-        fun_direction_none)
+                                                                    as_index=False).agg(fun_direction_none)
     test_1 = test[['TERMINALNO', 'TRIP_ID', 'DIRECTION']].groupby(['TERMINALNO', 'TRIP_ID'],
-                                                                            as_index=False).agg(
-        fun_direction_none)
+                                                                  as_index=False).agg(fun_direction_none)
     train_1 = train_1[['TERMINALNO', 'DIRECTION']].groupby('TERMINALNO').mean()
     test_1 = test_1[['TERMINALNO', 'DIRECTION']].groupby('TERMINALNO').mean()
     train_1.rename(columns={'DIRECTION': 'DIRECTION_NONE'}, inplace=True)
@@ -32,18 +31,18 @@ def rxd_time_gap_direction_change_feat(train, test):
     train_data = train_data[['TERMINALNO', 'DIRECTION']].groupby('TERMINALNO').mean()
     test_data = test_data[['TERMINALNO', 'DIRECTION']].groupby('TERMINALNO').mean()
 
-    train_data.rename(columns={'DIRECTION':'DIRECTION_VAR'},inplace=True)
-    test_data.rename(columns={'DIRECTION':'DIRECTION_VAR'},inplace=True)
+    train_data.rename(columns={'DIRECTION': 'DIRECTION_VAR'}, inplace=True)
+    test_data.rename(columns={'DIRECTION': 'DIRECTION_VAR'}, inplace=True)
 
     train_data = pd.merge(train_data, train_1, left_index=True, right_index=True)
     test_data = pd.merge(test_data, test_1, left_index=True, right_index=True)
 
     # 取组内时间差距
     train_2 = train[['TERMINALNO', 'TRIP_ID', 'TIME']].groupby(['TERMINALNO', 'TRIP_ID'],
-                                                                         as_index=False).agg(
+                                                               as_index=False).agg(
         lambda arr: (arr.iloc[-1] - arr.iloc[0]).seconds)
     test_2 = test[['TERMINALNO', 'TRIP_ID', 'TIME']].groupby(['TERMINALNO', 'TRIP_ID'],
-                                                                       as_index=False).agg(
+                                                             as_index=False).agg(
         lambda arr: (arr.iloc[-1] - arr.iloc[0]).seconds)
     train_2 = train_2[['TERMINALNO', 'TIME']].groupby(['TERMINALNO']).mean()
     test_2 = test_2[['TERMINALNO', 'TIME']].groupby(['TERMINALNO']).mean()

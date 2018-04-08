@@ -5,33 +5,19 @@ import sys
 module_path = os.path.abspath(os.path.join('..'))
 sys.path.append(module_path)
 
+from utils.feature_utils import time_this
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 import xgboost as xgb
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
-import time
-
-from functools import wraps
 
 
-def timethis(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        r = func(*args, **kwargs)
-        end = time.perf_counter()
-        print('{}.{}:{} seconds'.format(func.__module__, func.__name__, round(end - start , 2)))
-        return r
-
-    return wrapper
-
-
-@timethis
+@time_this
 def model_train(train_set, test_set):
     train, test, train_label, test_index = merge_datasets(train_set, test_set)
-    # print(train.head(3))
+    print(train.head(3))
     print('train.', train.axes)
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)

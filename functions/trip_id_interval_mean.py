@@ -1,5 +1,5 @@
 # coding : utf-8
-from utils import data_utils
+# created by wyj
 import pandas as pd
 
 
@@ -7,7 +7,7 @@ def mean(x):
     return sum(x) / len(x)
 
 
-def wyj_trip_id_interval_mean(train, test):
+def trip_id_interval_mean(train, test):
     """
     用户多次行程时间间隔的平均数
     :param train:
@@ -35,7 +35,7 @@ def wyj_trip_id_interval_mean(train, test):
             tmp.append(mean(interval))
         else:
             tmp.append(0)
-    # fillna:
+    # fill na:
     mean_tmp = mean(tmp)
     tmp = [x if x != 0 else mean_tmp for x in tmp]
     # transfer to DataFrame:
@@ -54,7 +54,7 @@ def wyj_trip_id_interval_mean(train, test):
             tmp.append(mean(interval))
         else:
             tmp.append(0)
-    # fillna:
+    # fill na:
     mean_tmp = mean(tmp)
     tmp = [x if x != 0 else mean_tmp for x in tmp]
     # transfer to DataFrame:

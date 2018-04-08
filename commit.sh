@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# check file exist
 if [ -d "_PA_competition" ]; then
     echo "directory exists! Removing...Done"
     rm -rf _PA_competition
@@ -22,6 +23,8 @@ cp main.py ./_PA_competition
 
 # make data directories
 mkdir ./_PA_competition/features
+mkdir ./_PA_competition/datasets
+mkdir ./_PA_competition/cleaned
 mkdir ./_PA_competition/model
 
 # change configure.py

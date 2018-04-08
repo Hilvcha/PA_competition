@@ -7,12 +7,12 @@ from input.read_data import read_data
 import time
 
 if __name__ == "__main__":
-    print("****************** start at:",time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),'******************')
+    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), '*******')
     # 程序入口
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
     save_all_features(trainSet, testSet)
-    
-    model_train(trainSet, testSet)
 
-    print("****************** end at:",time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),'******************')
+    # model_train(trainSet, testSet)
+
+    print("******* end at:", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), '*******')

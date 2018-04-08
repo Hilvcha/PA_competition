@@ -1,12 +1,9 @@
 # coding : utf-8
-
+# created by __your name here__
 
 def {{ name }}(train, test):
     """
-        your description here.
-    :param train:
-    :param test:
-    :return:
+        {{ desc }}
     """
     train_res = train
     test_res = test

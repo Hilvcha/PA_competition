@@ -4,7 +4,7 @@ from unittest import TestCase, main
 from random import randint
 from conf.configure import Configure
 from input.read_data import read_data
-from functions.trip_id_interval_mean import wyj_trip_id_interval_mean
+from functions.trip_id_interval_mean import trip_id_interval_mean
 
 
 def mean(x):
@@ -13,7 +13,7 @@ def mean(x):
 
 class TestTripIdCount(TestCase):
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
-    trainData, testData = wyj_trip_id_interval_mean(trainSet, testSet)
+    trainData, testData = trip_id_interval_mean(trainSet, testSet)
 
     def testSequence(self):
         td1 = self.trainSet[["TIME", "TERMINALNO", "TRIP_ID"]].groupby(['TERMINALNO'])
