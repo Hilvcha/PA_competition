@@ -3,19 +3,22 @@
 ## How to use 如何使用
 
 if you are new to this projects, you can use:
-如果你是第一次进到这个项目中，你可以用
+
+如果你是第一次进到这个项目中，你可以用:
 
     python start.py
 
-to download data file from PINGAN platform and generate storage directories.
-来从平安平台下载文件，安装依赖，生成个人配置和产生数据文件夹。
+to download data file from PINGAN platform, install dependencies, generate personal configurations and storage directories.
+
+来从平安平台下载文件，安装依赖，生成个人配置和数据文件夹。
 
 > Note: 请在完成后修改_user_config.yaml文件里的用户名
 
 ## How to add a new feature 如何添加一个新的特征
 
 You are recommended to use the script `add_feature.py` as it usage:
-推荐使用 `add_feature.py` 脚本，可以跟他的usage一样使用:
+
+推荐使用 `add_feature.py` 脚本，使用方式跟他的usage一样:
 
     usage: The feature adder for PA_competition [-h] [-d DESC] name
 
@@ -27,23 +30,26 @@ or 或者
 
     python add_feature.py <your-feature-name> -d "some descriptions"
 
-> Note 在那之后你需要在README中下面添加你的特征名和相关信息
+> Note: 在那之后你需要在README中下面添加你的特征名和相关信息
 
 ## How to commit (to PINGAN platform) 如何提交（到平安平台）
 
 > Note: 提交前请检查configure.py和main.py文件
 
 run with git Bash:
+
 在Git Bash中运行：
 
     ./commit.sh
 
 then zip the _PA_competition directory, and commit it.
+
 然后打包_PA_competition 文件夹，在平安数据平台上提交他。
 
-> Note: You should still check out the configure.py 你还是应该检查压缩包里面的configure.py文件
+> Note: You should still check out the configure.py 
+> Note: 你还是应该检查压缩包里面的configure.py文件
 
-> Note: 如果你是Linux用户或者安装了Windows下的GNU ZIP，这个脚本会直接生成压缩文件。
+>> 如果你是Linux用户或者安装了Windows下的GNU ZIP，这个脚本会直接生成压缩文件。
 
 ## requirements.txt
 
