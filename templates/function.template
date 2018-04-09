@@ -1,5 +1,5 @@
 # coding : utf-8
-# created by __your name here__
+# created by {{ username }} at {{ time }}
 
 def {{ name }}(train, test):
     """

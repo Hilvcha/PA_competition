@@ -19,3 +19,6 @@ test.csv
 # generated from commit.sh
 _PA_competition/
 _PA_competition.zip
+
+# for different user
+_user_config.yaml

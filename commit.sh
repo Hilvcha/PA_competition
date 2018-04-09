@@ -33,7 +33,7 @@ sed -r 's/os\.path\.join\(base_path, \"test\.csv\"\)/\"\/data\/dm\/test\.csv\"/g
 
 echo "Successfully generate directory: _PA_competition"
 
-# zip it and delete (useless for Windows)
+# zip it and delete (almost useless for Windows)
 which zip > /dev/null 2>&1
 if [ $? == 0 ]; then
     echo "generating zip file...."
