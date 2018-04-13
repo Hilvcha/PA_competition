@@ -19,7 +19,7 @@ from functions.speed_final_mean import speed_final_mean
 from functions.time_direction_change_feat import time_gap_direction_change_feat
 from functions.callstate_feat import callstate_feat
 from functions.calling_time import calling_time
-
+from functions.time import  build_time_features
 
 @time_this
 def save_all_features(train, test):
@@ -32,6 +32,7 @@ def save_all_features(train, test):
         # 通话时间(在总行程时间中的占比)
         "calling_time": calling_time,
         'callstate_feat': callstate_feat,
+        "build_time_features": build_time_features,
     }
     for name in Configure.features:
         save_features(*funcs[name](train, test), name)

@@ -40,10 +40,11 @@ def time_gap_direction_change_feat(train, test):
     # 取组内时间差距
     train_2 = train[['TERMINALNO', 'TRIP_ID', 'TIME']].groupby(['TERMINALNO', 'TRIP_ID'],
                                                                as_index=False).agg(
-        lambda arr: (arr.iloc[-1] - arr.iloc[0]).seconds)
+        lambda arr: (arr.iloc[-1] - arr.iloc[0]).total_seconds())
     test_2 = test[['TERMINALNO', 'TRIP_ID', 'TIME']].groupby(['TERMINALNO', 'TRIP_ID'],
                                                              as_index=False).agg(
-        lambda arr: (arr.iloc[-1] - arr.iloc[0]).seconds)
+        lambda arr: (arr.iloc[-1] - arr.iloc[0]).total_seconds())
+
     train_2 = train_2[['TERMINALNO', 'TIME']].groupby(['TERMINALNO']).mean()
     test_2 = test_2[['TERMINALNO', 'TIME']].groupby(['TERMINALNO']).mean()
 

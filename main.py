@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
 
-from train_model.xgboost_model import model_train
+import time
+
 from conf.configure import Configure
 from functions.functions import save_all_features
 from input.read_data import read_data
-import time
+from train_model.xgboost_model import model_train
 
 if __name__ == "__main__":
-    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), '*******')
+    now=time.localtime(time.time())
+    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S',now ), '*******')
     # 程序入口
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
@@ -15,4 +17,5 @@ if __name__ == "__main__":
 
     model_train(trainSet, testSet)
 
-    print("******* end at:", time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), '*******')
+    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S',now ), '*******')
+

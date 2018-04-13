@@ -35,6 +35,8 @@ class Configure(object):
         'callstate_feat',
         # 通话时间(在总行程时间中的占比)
         "calling_time",
+        # time
+        "build_time_features"
     ]
 
 

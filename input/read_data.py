@@ -46,7 +46,7 @@ def read_data(train_path, test_path):
     train = pd.read_csv(train_path, encoding='utf8')
     test = pd.read_csv(test_path, encoding='utf8')
 
-    # 将数据集中的时间戳转化为时间
+    # # 将数据集中的时间戳转化为时间
     train.TIME = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
     test.TIME = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
 
