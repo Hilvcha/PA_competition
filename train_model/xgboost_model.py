@@ -15,7 +15,7 @@ from conf.configure import Configure
 
 
 @time_this
-def model_train(train_set, test_set):
+def xgboost_train(train_set, test_set):
     train, test, train_label, test_index = merge_datasets(train_set, test_set)
     print(train.head(3))
     print('train.', train.axes)
