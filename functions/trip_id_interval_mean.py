@@ -19,14 +19,14 @@ def trip_id_interval_mean(train, test):
     for i, value in td1:  # for each user
         max_values = value.groupby(['TRIP_ID']).max().sort_values(by="TIME")
         min_values = value.groupby(['TRIP_ID']).min().sort_values(by="TIME")
-        for maxv, minv in zip(max_values.index, min_values.index):
-            if maxv != minv:
-                print('========================ERROR=========================================')
-        # if i == 1:
-        #     print(max_values)
-        #     for maxv, minv in zip(max_values.index, min_values.index):
-        #         print(max_values.loc[maxv], maxv)
-        #         print(min_values.loc[minv], minv)
+        # for maxv, minv in zip(max_values.index, min_values.index):
+        #     if maxv != minv:
+        #         print('========================ERROR=========================================')
+        # # if i == 1:
+        # #     print(max_values)
+        # #     for maxv, minv in zip(max_values.index, min_values.index):
+        # #         print(max_values.loc[maxv], maxv)
+        # #         print(min_values.loc[minv], minv)
 
         if min_values.shape[0] != 1:
             interval = min_values["TIME"].values[1:] - max_values["TIME"].values[:-1]

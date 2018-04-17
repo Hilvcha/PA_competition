@@ -47,8 +47,11 @@ def read_data(train_path, test_path):
     test = pd.read_csv(test_path, encoding='utf8')
 
     # # 将数据集中的时间戳转化为时间
-    train.TIME = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
-    test.TIME = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
+    train['TIME1'] = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
+    test['TIME1'] = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
+
+    train.rename(columns={"TIME": "TIME_STAMP","TIME1":"TIME"}, inplace=True)
+    test.rename(columns={"TIME": "TIME_STAMP","TIME1":"TIME"}, inplace=True)
 
     # 对数据按照时间顺序排序
     train.sort_values(by=['TERMINALNO', 'TIME'], inplace=True)

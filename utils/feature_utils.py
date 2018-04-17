@@ -1,7 +1,7 @@
 # coding: utf-8
 import time
 from functools import wraps
-
+import pandas as pd
 
 def time_this(func):
     @wraps(func)
@@ -55,3 +55,11 @@ def fun_direction_none(arr):
         if arr.iloc[i] == -1:
             ll += 1
     return ll
+
+#创建空的可以加入类型的df
+# df = df_empty(['a', 'b'], dtypes=[np.int64,np.int64,] print list(df.dtypes) # int64, int6
+def df_empty(columns, dtypes, index=None):
+    df = pd.DataFrame(index=index)
+    for c,d in zip(columns, dtypes):
+        df[c] = pd.Series(dtype=d)
+    return df

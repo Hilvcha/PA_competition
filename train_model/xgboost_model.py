@@ -17,12 +17,13 @@ from conf.configure import Configure
 @time_this
 def xgboost_train(train_set, test_set):
     train, test, train_label, test_index = merge_datasets(train_set, test_set)
-    print(train.head(3))
-    print('train.', train.axes)
+
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
-
-    print(train_label.shape, train.shape)
+    # print(train.head(3))
+    # print('train.', train.axes)
+    # print(train.dtypes)
+    # print(train_label.shape, train.shape)
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
 
     d_train = xgb.DMatrix(x_train, label=y_train)
@@ -32,13 +33,13 @@ def xgboost_train(train_set, test_set):
         'learning_rate': 0.1,
         'n_estimators': 1000,
         'max_depth': 3,
-        'min_child_weight': 6,
+        'min_child_weight': 7,
         'gamma': 0,
         'subsample': 0.8,
         'colsample_bytree': 0.8,
         'eta': 0.05,
         'silent': 1,
-        'objective': 'rank:pairwise',
+        'objective': 'reg:linear',
         'eval_metric': 'auc'
     }
 

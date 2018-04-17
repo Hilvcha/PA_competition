@@ -20,5 +20,4 @@ if __name__ == "__main__":
 
     xgboost_train(trainSet, testSet)
 
-    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S',now ), '*******')
 
