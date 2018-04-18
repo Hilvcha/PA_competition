@@ -16,7 +16,7 @@ from conf.configure import Configure
 from utils import feature_utils, data_utils
 
 
-def merge_datasets(train, test):
+def merge_datasets(train, test,slices):
     y_train = feature_utils.get_label(train)
 
     train_index = pd.Index(train['TERMINALNO'])
@@ -30,6 +30,7 @@ def merge_datasets(train, test):
 
     # 加载记载在configure列表中的特征，并且合并
     for feature_name in Configure.features:
+        #将不同块的特征concat起来
         print('pd merge', feature_name)
         train_feature, test_feature = data_utils.load_features(feature_name)
         train = pd.merge(train, train_feature,

@@ -24,7 +24,7 @@ from functions.height import height_feet
 
 
 @time_this
-def save_all_features(train, test):
+def save_all_features(train, test,s):
     funcs = {
         'speed_variance_mean': speed_variance_mean,
         'trip_id_count': trip_id_count,
@@ -38,7 +38,7 @@ def save_all_features(train, test):
         "height":height_feet,
     }
     for name in Configure.features:
-        save_features(*funcs[name](train, test), name)
+        save_features(*funcs[name](train, test), name,s)
 
 
 if __name__ == "__main__":

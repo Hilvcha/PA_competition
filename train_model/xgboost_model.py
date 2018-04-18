@@ -15,8 +15,8 @@ from conf.configure import Configure
 
 
 @time_this
-def xgboost_train(train_set, test_set):
-    train, test, train_label, test_index = merge_datasets(train_set, test_set)
+def xgboost_train(train_set, test_set,slices):
+    train, test, train_label, test_index = merge_datasets(train_set, test_set,slices)
 
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
