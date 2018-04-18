@@ -12,7 +12,7 @@ def timethis(func):
         start = time.perf_counter()
         r = func(*args, **kwargs)
         end = time.perf_counter()
-        print('{}.{}:{} seconds'.format(func.__module__, func.__name__, round(end - start , 2)))
+        print('{}.{}:{} seconds'.format(func.__module__, func.__name__, round(end - start, 2)))
         return r
 
     return wrapper
@@ -50,18 +50,50 @@ def read_data(train_path, test_path):
     train['TIME1'] = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
     test['TIME1'] = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
 
-    train.rename(columns={"TIME": "TIME_STAMP","TIME1":"TIME"}, inplace=True)
-    test.rename(columns={"TIME": "TIME_STAMP","TIME1":"TIME"}, inplace=True)
+    train.rename(columns={"TIME": "TIME_STAMP", "TIME1": "TIME"}, inplace=True)
+    test.rename(columns={"TIME": "TIME_STAMP", "TIME1": "TIME"}, inplace=True)
 
     # 对数据按照时间顺序排序
     train.sort_values(by=['TERMINALNO', 'TIME'], inplace=True)
     test.sort_values(by=['TERMINALNO', 'TIME'], inplace=True)
+    train.reset_index(drop=True, inplace=True)
+    test.reset_index(drop=True, inplace=True)
+
+    # 对时间差超过一分钟的作为新的trip_id
+    train_trip_idlist = []
+    for TERMINALNO, group in train.groupby(['TERMINALNO']):
+
+        trip_id = 1
+        temptime = group['TIME_STAMP'].iloc[0]
+        for index, row in group.iterrows():
+            if row['TIME_STAMP'] - temptime <= 60:
+                train_trip_idlist.append(trip_id)
+            else:
+                trip_id += 1
+                train_trip_idlist.append(trip_id)
+            temptime = row['TIME_STAMP']
+    train['TRIP_ID'] = train_trip_idlist
+
+    # 对时间差超过一分钟的作为新的trip_id
+    test_trip_idlist = []
+    for TERMINALNO, group in test.groupby(['TERMINALNO']):
+
+        trip_id = 1
+        temptime = group['TIME_STAMP'].iloc[0]
+        for index, row in group.iterrows():
+            if row['TIME_STAMP'] - temptime <= 60:
+                test_trip_idlist.append(trip_id)
+            else:
+                trip_id += 1
+                test_trip_idlist.append(trip_id)
+            temptime = row['TIME_STAMP']
+    test['TRIP_ID'] = test_trip_idlist
 
     # 删除只有一分钟记录的行程
-    train_data = train[['TERMINALNO', 'TRIP_ID', 'HEIGHT']].groupby(['TERMINALNO', 'TRIP_ID'], as_index=False).count()
-    train_data = train_data[train_data['HEIGHT'] > 1]
-    del train_data['HEIGHT']
-    train = pd.merge(train_data, train, on=['TERMINALNO', 'TRIP_ID'], how='left', )
+    # train_data = train[['TERMINALNO', 'TRIP_ID', 'HEIGHT']].groupby(['TERMINALNO', 'TRIP_ID'], as_index=False).count()
+    # train_data = train_data[train_data['HEIGHT'] > 1]
+    # del train_data['HEIGHT']
+    # train = pd.merge(train_data, train, on=['TERMINALNO', 'TRIP_ID'], how='left', )
 
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE, Y
     #

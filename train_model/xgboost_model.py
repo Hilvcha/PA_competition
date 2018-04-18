@@ -33,7 +33,7 @@ def xgboost_train(train_set, test_set):
         'learning_rate': 0.1,
         'n_estimators': 1000,
         'max_depth': 3,
-        'min_child_weight': 7,
+        'min_child_weight': 5,
         'gamma': 0,
         'subsample': 0.8,
         'colsample_bytree': 0.8,

@@ -20,6 +20,8 @@ from functions.time_direction_change_feat import time_gap_direction_change_feat
 from functions.callstate_feat import callstate_feat
 from functions.calling_time import calling_time
 from functions.time import  build_time_features
+from functions.height import height_feet
+
 
 @time_this
 def save_all_features(train, test):
@@ -33,6 +35,7 @@ def save_all_features(train, test):
         "calling_time": calling_time,
         'callstate_feat': callstate_feat,
         "build_time_features": build_time_features,
+        "height":height_feet,
     }
     for name in Configure.features:
         save_features(*funcs[name](train, test), name)

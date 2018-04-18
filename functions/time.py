@@ -29,11 +29,12 @@ def build_time_features(train_addtime, test_addtime):
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE
 
     train_user = train_addtime['TERMINALNO'].unique()
-
-    train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
-                          dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
-                                  np.float32, np.int8, np.int8, np.int8],index=train_user)
+    train_data=pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
+                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],index=train_user)
+    # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
+    #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
+    #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
+    #                               np.float32, np.int8, np.int8, np.int8],index=train_user)
     for TERMINALNO in train_user:
         user_data = train_addtime.loc[train_addtime['TERMINALNO'] == TERMINALNO]
         # 初始化 时间，方向变化
@@ -46,6 +47,8 @@ def build_time_features(train_addtime, test_addtime):
         maxTime = 0
         maxTimelist = []
 
+
+
         # 用户行驶过程中，打电话危机上升
         phonerisk = 0
 
@@ -90,9 +93,13 @@ def build_time_features(train_addtime, test_addtime):
 
                 # 海拔变化大的情况下和速度的危险系数
                 height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
+
+
+
                 tempheight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
+
                 maxTimelist.append(maxTime)
                 maxTime = 0
                 tempTime = row["TIME_STAMP"]
@@ -109,20 +116,23 @@ def build_time_features(train_addtime, test_addtime):
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
 
+
         train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk,speed_max, speed_mean, height_mean,
                                 Zao,
                                 Wan, Sheye]
+    train_data=train_data.astype(float)
     train_data[['TERMINALNO']]=train_data[['TERMINALNO']].astype(int)
 
     train_data.set_index('TERMINALNO', inplace=True,drop=True)
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE
 
     test_user = test_addtime['TERMINALNO'].unique()
-    test_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
-                          dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
-                                  np.float32, np.int8, np.int8, np.int8],index=test_user)
-
+    test_data=pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
+                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],index=test_user)
+    # test_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
+    #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
+    #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
+    #                               np.float32, np.int8, np.int8, np.int8],index=test_user)
     for TERMINALNO in test_user:
         user_data = test_addtime.loc[test_addtime['TERMINALNO'] == TERMINALNO]
         # 初始化 时间，方向变化
@@ -135,6 +145,8 @@ def build_time_features(train_addtime, test_addtime):
         maxTime = 0
         maxTimelist = []
 
+
+
         # 用户行驶过程中，打电话危机上升
         phonerisk = 0
 
@@ -179,9 +191,13 @@ def build_time_features(train_addtime, test_addtime):
 
                 # 海拔变化大的情况下和速度的危险系数
                 height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
+
+
+
                 tempheight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
+
                 maxTimelist.append(maxTime)
                 maxTime = 0
                 tempTime = row["TIME_STAMP"]
@@ -198,10 +214,13 @@ def build_time_features(train_addtime, test_addtime):
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
 
+
         test_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk,speed_max, speed_mean, height_mean,
                                 Zao,
                                 Wan, Sheye]
+    test_data=test_data.astype(float)
     test_data[['TERMINALNO']]=test_data[['TERMINALNO']].astype(int)
+
     test_data.set_index('TERMINALNO', inplace=True,drop=True)
     print(train_data.head(3))
     return train_data,test_data
