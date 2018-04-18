@@ -20,7 +20,7 @@ def xgboost_train(train_set, test_set):
 
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
-    # print(train.head(3))
+    print(train.head(3))
     # print('train.', train.axes)
     # print(train.dtypes)
     # print(train_label.shape, train.shape)
@@ -40,7 +40,7 @@ def xgboost_train(train_set, test_set):
         'eta': 0.05,
         'silent': 1,
         'objective': 'reg:linear',
-        'eval_metric': 'auc'
+        'eval_metric': 'rmse'
     }
 
     num_round = 100
