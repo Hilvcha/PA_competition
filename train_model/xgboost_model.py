@@ -24,7 +24,7 @@ def xgboost_train(train_set, test_set):
     # print('train.', train.axes)
     # print(train.dtypes)
     # print(train_label.shape, train.shape)
-    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.2, random_state=100)
+    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
 
     d_train = xgb.DMatrix(x_train, label=y_train)
     # print(d_train)
