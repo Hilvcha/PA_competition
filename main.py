@@ -9,24 +9,31 @@ from train_model.xgboost_model import xgboost_train
 from train_model.liner_model import liner_train
 
 if __name__ == "__main__":
-    now=time.localtime(time.time())
-    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S',now ), '*******')
+    now = time.localtime(time.time())
+    print("******* start at:", time.strftime('%Y-%m-%d %H:%M:%S', now), '*******')
     # 程序入口
-    trainSet, testSet = read_data(Configure.train_path, Configure.test_path,4)
+    trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
-    slices = 4
+    slices = 9
+    train_slice_num = int(trainSet.TERMINALNO.max() / slices)
+    test_slice_num = int(testSet.TERMINALNO.max() / slices)
+
     for s in range(slices):
         print("*****section", s, "******")
-        slice_num = int(trainSet.TERMINALNO.max() / slices)
-        start = slice_num * s
-        end = slice_num(s + 1)
+        train_start = train_slice_num * s
+        train_end = train_slice_num * (s + 1)
+
+        test_start = test_slice_num * s
+        test_end = test_slice_num * (s + 1)
         if s == slices - 1:
-            end += slices
-        trainSet = trainSet[(trainSet['TERMINALNO'] > start) & (trainSet['TERMINALNO'] <= end)]
-        save_all_features(trainSet, testSet,s)
+            train_end += slices
+            test_end += slices
+
+        trainSection = trainSet[(trainSet['TERMINALNO'] > train_start) & (trainSet['TERMINALNO'] <= train_end)]
+        testSection = testSet[(testSet['TERMINALNO'] > test_start) & (testSet['TERMINALNO'] <= test_end)]
+
+        save_all_features(trainSection, testSection,s)
 
     # liner_train(trainSet,testSet)
 
-        xgboost_train(trainSet, testSet,slices)
-
-
+    xgboost_train(trainSet, testSet,slices)

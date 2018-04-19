@@ -30,13 +30,17 @@ def calling_time(train, test):
     """
         通话时间(在总行程时间中的占比)
     """
+    print(train)
     train_data = train[['TERMINALNO', 'TRIP_ID', 'CALLSTATE', 'TIME']].groupby(["TERMINALNO", "TRIP_ID"]).apply(
         get_calling_time)
-    train_series = train_data.groupby("TERMINALNO").sum().apply(lambda x: x.days * 24 * 3600 + x.seconds)
+    print(train_data)
+    train_series = train_data.groupby("TERMINALNO").sum().apply(lambda x: x.total_seconds())
     train_res = pd.DataFrame(train_series, columns=["calling_time"])
+    print(train_series)
+
 
     test_data = test[['TERMINALNO', 'TRIP_ID', 'CALLSTATE', 'TIME']].groupby(["TERMINALNO", "TRIP_ID"]).apply(
         get_calling_time)
-    test_series = test_data.groupby("TERMINALNO").sum().apply(lambda x: x.days * 24 * 3600 + x.seconds)
+    test_series = test_data.groupby("TERMINALNO").sum().apply(lambda x: x.total_seconds())
     test_res = pd.DataFrame(test_series, columns=["calling_time"])
     return train_res, test_res
