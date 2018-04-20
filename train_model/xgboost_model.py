@@ -39,7 +39,7 @@ def xgboost_train(train_set, test_set,slices):
         'eta': 0.05,
         'silent': 1,
         'objective': 'reg:linear',
-        'eval_metric': 'rmse'
+        'eval_metric': 'auc'
     }
 
     num_round = 100

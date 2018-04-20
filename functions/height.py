@@ -51,9 +51,19 @@ def speed_risk(arr):
                 call_risk += math.exp(tempspeed / 10)
 
         D_height = abs(row['HEIGHT'] - tempheight)
-        D_speed = abs(row['SPEED'] - tempspeed)
+
+        if row['SPEED']==-1:
+            D_speed=0
+        else:
+            D_speed = abs(row['SPEED'] - tempspeed)
+
         height_risk += math.pow(D_speed / 10, D_height / 100)
-        tempspeed = row['SPEED']
+
+        if row['SPEED'] == -1:
+            pass
+        else:
+            tempspeed = row['SPEED']
+
         tempheight = row['HEIGHT']
         if row['DIRECTION'] == -1:
             pass
@@ -71,6 +81,7 @@ def speed_risk(arr):
     return arr
 
 def height_feet(train, test):
+
     # 加入了危险系数
     train_speed_risk = train[["TERMINALNO", 'TRIP_ID', 'HEIGHT', 'SPEED', 'DIRECTION', "CALLSTATE"]].groupby(
         ["TERMINALNO", 'TRIP_ID'],
@@ -110,6 +121,7 @@ def height_feet(train, test):
         ["TERMINALNO"],
         as_index=True).mean()
     test_data=pd.concat([test_data, test_speed_risk], axis=1)
+
     return train_data, test_data
 
     # # 加入了危险系数

@@ -19,7 +19,6 @@ def load_features(feature_name,slices):
         train = pickle.load(f)
     with open(test_path, 'rb') as f:
         test = pickle.load(f)
-
     for i in range(slices):
         if i==0:
             continue
@@ -31,10 +30,12 @@ def load_features(feature_name,slices):
             temptest = pickle.load(f)
         train = pd.concat([train,temptrain])
         test=pd.concat([test,temptest])
+
     return train, test
 
 
 def save_features(train, test, feature_name, s):
+
     if train is not None:
         train_path = os.path.join(Configure.features_path, 'train_' + feature_name + '_' + str(s) + '.pkl')
         with open(train_path, 'wb') as f:
@@ -42,4 +43,4 @@ def save_features(train, test, feature_name, s):
     if test is not None:
         train_path = os.path.join(Configure.features_path, 'test_' + feature_name + '_' + str(s) + '.pkl')
         with open(train_path, 'wb') as f:
-            pickle.dump(train, f, -1)
+            pickle.dump(test, f, -1)

@@ -33,12 +33,14 @@ def merge_datasets(train, test,slices):
         #将不同块的特征concat起来
         print('pd merge', feature_name)
         train_feature, test_feature = data_utils.load_features(feature_name,slices)
-        print(train_feature.columns,train_feature.shape)
+
+        print(train_feature.columns,train_feature.shape,test_feature.shape)
         train = pd.merge(train, train_feature,
                          left_index=True,
-                         right_index=True)
+                         right_index=True,how='left')
         test = pd.merge(test, test_feature,
                         left_index=True,
-                        right_index=True)
+                        right_index=True,how='left')
     print(train.shape, test.shape, y_train.shape, test_index.shape)
+
     return train, test, y_train, test_index
