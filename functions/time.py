@@ -222,7 +222,6 @@ def build_time_features(train_addtime, test_addtime):
     test_data[['TERMINALNO']]=test_data[['TERMINALNO']].astype(int)
 
     test_data.set_index('TERMINALNO', inplace=True,drop=True)
-    print(train_data.head(3))
     return train_data,test_data
 
 

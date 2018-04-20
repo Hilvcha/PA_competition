@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # 程序入口
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
-    slices = 9
+    slices = 6
     train_slice_num = int(trainSet.TERMINALNO.max() / slices)
     test_slice_num = int(testSet.TERMINALNO.max() / slices)
 

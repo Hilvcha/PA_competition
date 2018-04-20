@@ -21,27 +21,27 @@ def timethis(func):
 @timethis
 def read_data(train_path, test_path):
     # dtypes_train = {
-    #     'TERMINALNO': 'uint32',
-    #    # 'TIME': 'uint64',
-    #     'TRIP_ID': 'uint8',
+    #     'TERMINALNO': 'int32',
+    #     'TIME': 'int32',
+    #     'TRIP_ID': 'int8',
     #     'LATITUDE': 'float32',
     #     'LONGITUDE': 'float32',
-    #     'DIRECTION': 'uint8',
+    #     'DIRECTION': 'int8',
     #     'HEIGHT': 'float32',
     #     'SPEED': 'float32',
-    #     'CALLSTATE': 'uint8',
+    #     'CALLSTATE': 'int8',
     #     'Y': 'float32'
     # }
     # dtypes_test = {
-    #     'TERMINALNO': 'uint32',
-    #    # 'TIME': 'uint64',
-    #     'TRIP_ID': 'uint8',
+    #     'TERMINALNO': 'int32',
+    #     'TIME': 'int32',
+    #     'TRIP_ID': 'int8',
     #     'LATITUDE': 'float32',
     #     'LONGITUDE': 'float32',
-    #     'DIRECTION': 'uint8',
+    #     'DIRECTION': 'int8',
     #     'HEIGHT': 'float32',
     #     'SPEED': 'float32',
-    #     'CALLSTATE': 'uint8',
+    #     'CALLSTATE': 'int8',
     # }
 
 
