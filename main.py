@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # 程序入口
     trainSet, testSet = read_data(Configure.train_path, Configure.test_path)
 
-    slices = 20
+    slices = 10
     train_slice_num = int(trainSet.TERMINALNO.max() / slices)
     test_slice_num = int(testSet.TERMINALNO.max() / slices)
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         testSection = testSet[(testSet['TERMINALNO'] > test_start) & (testSet['TERMINALNO'] <= test_end)]
         save_all_features(trainSection, testSection,s)
 
-    # liner_train(trainSet,testSet)
+    # liner_train(trainSet,testSet,slices)
 
     xgboost_train(trainSet, testSet,slices)
 

@@ -39,7 +39,7 @@ def xgboost_train(train_set, test_set,slices):
         'eta': 0.05,
         'silent': 1,
         'objective': 'reg:linear',
-        'eval_metric': 'auc'
+        'eval_metric': 'rmse'
     }
 
     num_round = 100
@@ -62,25 +62,22 @@ if __name__ == '__main__':
     print('========== xgboost 模型训练 ==========')
     # model_train()
 # 日志详情
-# ******* start at: 2018-04-20 01:08:28 ******* \
-#     input.read_data.read_data:5148.18
-# seconds *****section 0 ******
-# functions.functions.save_all_features:5348.98 seconds
-# *****section 1 ******
-# functions.functions.save_all_features:4981.69 seconds
-# pd merge build_time_features
-# (33454, 11) (14045, 11) (33455, 1) (14046,)
-#  maxTime phonerisk dir_risk height_risk speed_max TERMINALNO
-# 1 4920.0 43.46149
-# 2 2061.953853 311.159931 30.934708 2 1860.0 48.487930 399.247677 397.850743 20.540089 3 2760.0 43.118034 470.008747 267.205415 32.200820
-# speed_mean height_mean Zao Wan Sheye TERMINALNO
-#  1 18.033800 6.563380 1.0 0.0 1.0 2 9.113635 13.634106 1.0 0.0 1.0 3 19.513882 10.519737 1.0 0.0 1.0
-# Traceback (most recent call last):
-# File "/data/share/jingsuan/js_project/1825122096_1825122096/_PA_competition/main.py", line 39, in <module> xgboost_train(trainSet, testSet,slices)
-# File "/data/share/jingsuan/js_project/1825122096_1825122096/_PA_competition/utils/feature_utils.py", line 10, in wrapper r = func(*args, **kwargs)
-# File "/data/share/jingsuan/js_project/1825122096_1825122096/_PA_competition/train_model/xgboost_model.py",
-# line 27, in xgboost_train x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
-# File "/usr/local/python3/lib/python3.6/site-packages/sklearn/model_selection/_split.py", line 2031, in train_test_split arrays = indexable(*arrays)
-# File "/usr/local/python3/lib/python3.6/site-packages/sklearn/utils/validation.py", line 229, in indexable check_consistent_length(*result)
-# File "/usr/local/python3/lib/python3.6/site-packages/sklearn/utils/validation.py", line 204, in check_consistent_length "samples: %r" % [int(l) for l in lengths])
-# ValueError: Found input variables with inconsistent numbers of samples: [33454, 33455]
+# *****section 2 ******
+# functions.functions.save_all_features:1505.19 seconds
+# *****section 3 ****** functions.functions.save_all_features:1476.56 seconds
+# *****section 4 ****** functions.functions.save_all_features:1500.83 seconds
+# *****section 5 ****** functions.functions.save_all_features:1540.52 seconds
+# *****section 6 ****** functions.functions.save_all_features:1593.36 seconds
+# *****section 7 ****** functions.functions.save_all_features:1503.79 seconds
+# *****section 8 ****** functions.functions.save_all_features:1480.98 seconds
+# *****section 9 ****** functions.functions.save_all_features:1504.11 seconds
+# pd merge height Index(['MAX_SUCC_INC', 'MEAN_SUCC_INC', 'VAR_SUCC_INC', 'HEIGHT_RISK', 'DIRECTION_RISK', 'CALLSTATE_RISK'], dtype='object')
+# (16726, 6) (14045, 6)
+# (16727, 7) (14046, 7) (16727, 1) (14046,)
+#     TERMINALNO MAX_SUCC_INC MEAN_SUCC_INC VAR_SUCC_INC HEIGHT_RISK DIRECTION_RISK CALLSTATE_RISK
+# TERMINALNO
+# 0   0           NaN         NaN             NaN        NaN          NaN             NaN
+# 1   1           40.0        4.000000        50.105263   8.922499    9.364827        1.500574
+# 2   2           30.0        5.480769        64.931665  5.574673     6.081244        0.456873
+# Traceback (most recent call last): File "/data/share/jingsuan/js_project/1825122858_1825122858/_PA_competition/main.py", line 37, in <module> liner_train(trainSet,testSet,slices) File "/data/share/jingsuan/js_project/1825122858_1825122858/_PA_competition/utils/feature_utils.py", line 10, in wrapper r = func(*args, **kwargs) File "/data/share/jingsuan/js_project/1825122858_1825122858/_PA_competition/train_model/liner_model.py", line 31, in liner_train linreg.fit(train, train_label) File "/usr/local/python3/lib/python3.6/site-packages/sklearn/linear_model/ridge.py", line 665, in fit return super(Ridge, self).fit(X, y, sample_weight=sample_weight) File "/usr/local/python3/lib/python3.6/site-packages/sklearn/linear_model/ridge.py", line 483, in fit multi_output=True, y_numeric=True) File "/usr/local/python3/lib/python3.6/site-packages/sklearn/utils/validation.py", line 573, in check_X_y ensure_min_features, warn_on_dtype, estimator) File "/usr/local/python3/lib/python3.6/site-packages/sklearn/utils/validation.py", line 453, in check_array _assert_all_finite(array)
+# File "/usr/local/python3/lib/python3.6/site-packages/sklearn/utils/validation.py", line 44, in _assert_all_finite "or a value too large for %r." % X.dtype) ValueError: Input contains NaN, infinity or a value too large for dtype('float64').

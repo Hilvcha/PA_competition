@@ -80,49 +80,30 @@ def speed_risk(arr):
 
     return arr
 
-def height_feet(train, test):
+def height_feet(data):
 
     # 加入了危险系数
-    train_speed_risk = train[["TERMINALNO", 'TRIP_ID', 'HEIGHT', 'SPEED', 'DIRECTION', "CALLSTATE"]].groupby(
+    data_speed_risk = data[["TERMINALNO", 'TRIP_ID', 'HEIGHT', 'SPEED', 'DIRECTION', "CALLSTATE"]].groupby(
         ["TERMINALNO", 'TRIP_ID'],
         as_index=False).apply(
         speed_risk)
-    train_speed_risk = train_speed_risk[
+    data_speed_risk = data_speed_risk[
         ["TERMINALNO", 'TRIP_ID', 'HEIGHT_RISK', 'DIRECTION_RISK', 'SUCC_INC', "CALLSTATE_RISK"]].groupby(
         ["TERMINALNO", 'TRIP_ID'],
         as_index=False).mean()
-    max_train = train_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).max()
-    mean_train = train_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).mean()
-    var_train = train_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).var()
-    train_data=pd.concat([max_train, mean_train, var_train], axis=1)
+    max_data = data_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).max()
+    mean_data = data_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).mean()
+    var_data = data_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).var()
+    train_data=pd.concat([max_data, mean_data, var_data], axis=1)
     train_data.columns = ['MAX_SUCC_INC', 'MEAN_SUCC_INC', 'VAR_SUCC_INC']
 
-    train_speed_risk = train_speed_risk[["TERMINALNO", 'HEIGHT_RISK', 'DIRECTION_RISK', "CALLSTATE_RISK"]].groupby(
+    data_speed_risk = data_speed_risk[["TERMINALNO", 'HEIGHT_RISK', 'DIRECTION_RISK', "CALLSTATE_RISK"]].groupby(
         ["TERMINALNO"],
         as_index=True).mean()
-    train_data=pd.concat([train_data,  train_speed_risk], axis=1)
+    train_data=pd.concat([train_data,  data_speed_risk], axis=1)
 
-    # 加入了危险系数
-    test_speed_risk = test[["TERMINALNO", 'TRIP_ID', 'HEIGHT', 'SPEED', 'DIRECTION', "CALLSTATE"]].groupby(
-        ["TERMINALNO", 'TRIP_ID'],
-        as_index=False).apply(
-        speed_risk)
-    test_speed_risk = test_speed_risk[
-        ["TERMINALNO", 'TRIP_ID', 'HEIGHT_RISK', 'DIRECTION_RISK', 'SUCC_INC', "CALLSTATE_RISK"]].groupby(
-        ["TERMINALNO", 'TRIP_ID'],
-        as_index=False).mean()
-    max_test = test_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).max()
-    mean_test = test_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).mean()
-    var_test = test_speed_risk[["TERMINALNO", 'SUCC_INC']].groupby(["TERMINALNO"], as_index=True).var()
-    test_data=pd.concat([max_test, mean_test, var_test], axis=1)
-    test_data.columns = ['MAX_SUCC_INC', 'MEAN_SUCC_INC', 'VAR_SUCC_INC']
 
-    test_speed_risk = test_speed_risk[["TERMINALNO", 'HEIGHT_RISK', 'DIRECTION_RISK', "CALLSTATE_RISK"]].groupby(
-        ["TERMINALNO"],
-        as_index=True).mean()
-    test_data=pd.concat([test_data, test_speed_risk], axis=1)
-
-    return train_data, test_data
+    return train_data
 
     # # 加入了危险系数
     # train_direction_risk = train[["TERMINALNO", 'TRIP_ID', 'DIRECTION', 'SPEED']].groupby(["TERMINALNO", 'TRIP_ID'],

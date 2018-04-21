@@ -37,8 +37,10 @@ def save_all_features(train, test,s):
         "build_time_features": build_time_features,
         "height":height_feet,
     }
-    for name in Configure.features:
-        save_features(*funcs[name](train, test), name,s)
+    for feat_name in Configure.features:
+        save_features(funcs[feat_name](train),'train', feat_name,s)
+        save_features(funcs[feat_name](test),'test', feat_name,s)
+
 
 
 if __name__ == "__main__":
