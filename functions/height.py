@@ -87,6 +87,7 @@ def height_feet(data):
         ["TERMINALNO", 'TRIP_ID'],
         as_index=False).apply(
         speed_risk)
+    # 为tripid聚合
     data_speed_risk = data_speed_risk[
         ["TERMINALNO", 'TRIP_ID', 'HEIGHT_RISK', 'DIRECTION_RISK', 'SUCC_INC', "CALLSTATE_RISK"]].groupby(
         ["TERMINALNO", 'TRIP_ID'],
@@ -99,7 +100,7 @@ def height_feet(data):
 
     data_speed_risk = data_speed_risk[["TERMINALNO", 'HEIGHT_RISK', 'DIRECTION_RISK', "CALLSTATE_RISK"]].groupby(
         ["TERMINALNO"],
-        as_index=True).mean()
+        as_index=True).sum()
     train_data=pd.concat([train_data,  data_speed_risk], axis=1)
 
 
