@@ -23,7 +23,7 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data=pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],index=train_user)
+                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye','time_weekend'],index=train_user)
 
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
@@ -44,19 +44,27 @@ def build_time_features(data):
         height_risk = 0
         height_risklist=[]
 
+        #基于实时速度而不是速度的变化率的危险系数
+
+        height_speed=0
+        height_speedlist=[]
         # 时间区间
         Zao = 0
         Wan = 0
         Sheye = 0
+        #下坡
+        sumh=0
+        height=99999
+        height_sumlist=[]
         for index, row in user_data.iterrows():
 
             p_time = row['TIME_hour']
             if 6 <= p_time <= 9:
-                Zao = 1
+                Zao += 1
             elif 17 <= p_time <= 19:
-                Wan = 1
+                Wan += 1
             elif 0 <= p_time < 6:
-                Sheye = 1
+                Sheye += 1
 
             # 如果具有速度，且在打电话
             if tempSpeed > 0 and row["CALLSTATE"] != 4:
@@ -67,8 +75,15 @@ def build_time_features(data):
                 else:
                     phonerisk += math.exp(tempSpeed / 10)
 
-            # 根据时间行驶判断
+            # # 根据时间行驶判断
             if row["TIME_STAMP"] - tempTime == 60:
+
+                sumh += row['HEIGHT'] - tempheight
+                if sumh < height:
+                    height = sumh
+                if sumh > 0:
+                    sumh = 0
+
                 maxTime += 60
                 tempTime = row["TIME_STAMP"]
 
@@ -79,18 +94,28 @@ def build_time_features(data):
 
                 # 海拔变化大的情况下和速度的危险系数
                 height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
-
+                height_speed+=math.pow(row['SPEED'],(abs(row["HEIGHT"] - tempheight) / 100))
                 tempdir = row["DIRECTION"]
                 tempSpeed = row["SPEED"]
                 tempheight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
+                height_sumlist.append(height)
+                height=99999
+                sumh=0
+
                 dir_risklist.append(dir_risk)
                 dir_risk=0
+
                 height_risklist.append(height_risk)
                 height_risk=0
+
+                height_speedlist.append(height_speed)
+                height_speed=0
+
                 maxTimelist.append(maxTime)
                 maxTime = 0
+
                 tempTime = row["TIME_STAMP"]
 
                 tempdir = row["DIRECTION"]
@@ -100,10 +125,15 @@ def build_time_features(data):
         speed_max = user_data["SPEED"].max()
         speed_mean = user_data["SPEED"].mean()
 
+        time_weekend=user_data['TIME_is_weekend'].mean()
+
         height_mean = user_data["HEIGHT"].mean()
 
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
+        #
+        height_sumlist.append(height)
+        height = sum(height_sumlist)/len(height_sumlist)
 
         dir_risklist.append(dir_risk)
         dir_risk = sum(dir_risklist)/len(dir_risklist)
@@ -111,9 +141,18 @@ def build_time_features(data):
         height_risklist.append(height_risk)
         height_risk = sum(height_risklist)/len(height_risklist)
 
-        train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk,speed_max, speed_mean, height_mean,
+        height_speedlist.append(height_speed)
+        height_speed = sum(height_speedlist)/len(height_speedlist)
+
+        #早中晚的占比
+        time_sum=Zao+Wan+Sheye
+        Zao=Zao/time_sum
+        Wan=Wan/time_sum
+        Sheye=Sheye/time_sum
+
+        train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_speed,speed_max, speed_mean, height_mean,
                                 Zao,
-                                Wan, Sheye]
+                                Wan, Sheye,time_weekend]
     train_data=train_data.astype(float)
     train_data[['TERMINALNO']]=train_data[['TERMINALNO']].astype(int)
 
