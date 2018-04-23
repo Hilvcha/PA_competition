@@ -24,10 +24,7 @@ def build_time_features(data):
     train_user = data['TERMINALNO'].unique()
     train_data=pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
                            'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],index=train_user)
-    # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-    #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
-    #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
-    #                               np.float32, np.int8, np.int8, np.int8],index=train_user)
+
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
         # 初始化 时间，方向变化
@@ -35,26 +32,22 @@ def build_time_features(data):
         tempSpeed = data["SPEED"].iloc[0]
         tempdir = data["DIRECTION"].iloc[0]
         tempheight = data["HEIGHT"].iloc[0]
-
         # 根据时间信息判断最长时间
         maxTime = 0
         maxTimelist = []
-
-
-
         # 用户行驶过程中，打电话危机上升
         phonerisk = 0
-
         # Direction 突变超过
         dir_risk = 0
-
+        dir_risklist=[]
         # Height 高度的危险值
         height_risk = 0
+        height_risklist=[]
+
         # 时间区间
         Zao = 0
         Wan = 0
         Sheye = 0
-
         for index, row in user_data.iterrows():
 
             p_time = row['TIME_hour']
@@ -87,12 +80,15 @@ def build_time_features(data):
                 # 海拔变化大的情况下和速度的危险系数
                 height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
 
-
-
+                tempdir = row["DIRECTION"]
+                tempSpeed = row["SPEED"]
                 tempheight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
-
+                dir_risklist.append(dir_risk)
+                dir_risk=0
+                height_risklist.append(height_risk)
+                height_risk=0
                 maxTimelist.append(maxTime)
                 maxTime = 0
                 tempTime = row["TIME_STAMP"]
@@ -109,6 +105,11 @@ def build_time_features(data):
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
 
+        dir_risklist.append(dir_risk)
+        dir_risk = sum(dir_risklist)/len(dir_risklist)
+
+        height_risklist.append(height_risk)
+        height_risk = sum(height_risklist)/len(height_risklist)
 
         train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk,speed_max, speed_mean, height_mean,
                                 Zao,

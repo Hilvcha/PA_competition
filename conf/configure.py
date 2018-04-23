@@ -40,7 +40,7 @@ class Configure(object):
     #     # # 通话状态
     #     'callstate_feat',
         # height最大连续子数组
-        "height",
+        # "height",
     ]
 
 

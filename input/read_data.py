@@ -48,10 +48,13 @@ def read_data(train_path, test_path):
 
     train = pd.read_csv(train_path, encoding='utf8')
     test = pd.read_csv(test_path, encoding='utf8')
-    train.replace([-1], method='pad',inplace=True)
-    test.replace([-1],method='pad',inplace=True)
+    train.replace(-1,np.nan,inplace=True)
+    test.replace(-1,np.nan,inplace=True)
+    train.fillna(method='pad',inplace=True)
+    test.fillna(method='pad',inplace=True)
 
-    train=train[train['TERMINALNO'] <= (train['TERMINALNO'].max()*2/3)]
+
+    train=train[train['TERMINALNO'] <= (train['TERMINALNO'].max())]
     # # 将数据集中的时间戳转化为时间
     train['TIME1'] = pd.to_datetime(train.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
     test['TIME1'] = pd.to_datetime(test.TIME.apply(time_reform), format='%Y-%m-%d %H:%M:%S')
