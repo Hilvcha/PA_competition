@@ -28,7 +28,7 @@ class Configure(object):
         # 通话时间(在总行程时间中的占比)
         # "calling_time",bug
         # # time
-         "build_time_features",
+        #  "build_time_features",
     #     # # 每名用户的行程数
     #     'trip_id_count',
     #     # # 用户最后一次行程速度的平均数
@@ -40,7 +40,7 @@ class Configure(object):
     #     # # 通话状态
     #     'callstate_feat',
         # height最大连续子数组
-        # "height",
+        "height",
     ]
 
 

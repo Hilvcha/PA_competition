@@ -23,7 +23,7 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data=pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye','time_weekend'],index=train_user)
+                           'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye','time_weekend',"height_down"],index=train_user)
 
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
@@ -51,7 +51,8 @@ def build_time_features(data):
         # 时间区间
         Zao = 0
         Wan = 0
-        Sheye = 0
+        Sheye =0
+        other=0
         #下坡
         sumh=0
         height=99999
@@ -60,11 +61,12 @@ def build_time_features(data):
 
             p_time = row['TIME_hour']
             if 6 <= p_time <= 9:
-                Zao += 1
+                Zao = 1
             elif 17 <= p_time <= 19:
-                Wan += 1
+                Wan = 1
             elif 0 <= p_time < 6:
-                Sheye += 1
+                Sheye = 1
+
 
             # 如果具有速度，且在打电话
             if tempSpeed > 0 and row["CALLSTATE"] != 4:
@@ -131,7 +133,7 @@ def build_time_features(data):
 
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
-        #
+
         height_sumlist.append(height)
         height = sum(height_sumlist)/len(height_sumlist)
 
@@ -143,16 +145,12 @@ def build_time_features(data):
 
         height_speedlist.append(height_speed)
         height_speed = sum(height_speedlist)/len(height_speedlist)
-
         #早中晚的占比
-        time_sum=Zao+Wan+Sheye
-        Zao=Zao/time_sum
-        Wan=Wan/time_sum
-        Sheye=Sheye/time_sum
+
 
         train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_speed,speed_max, speed_mean, height_mean,
                                 Zao,
-                                Wan, Sheye,time_weekend]
+                                Wan, Sheye,time_weekend,height]
     train_data=train_data.astype(float)
     train_data[['TERMINALNO']]=train_data[['TERMINALNO']].astype(int)
 

@@ -16,7 +16,7 @@ def time_this(func):
 
 # 取得目标向量
 def get_label(df):
-    df_label = df[['TERMINALNO', 'Y']].groupby('TERMINALNO').agg(lambda arr: arr.iloc[0])
+    df_label = df[['TERMINALNO', 'Y']].groupby('TERMINALNO').first()
     return df_label
 
 

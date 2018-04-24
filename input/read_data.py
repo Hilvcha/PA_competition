@@ -50,8 +50,8 @@ def read_data(train_path, test_path):
     test = pd.read_csv(test_path, encoding='utf8')
     train.replace(-1,np.nan,inplace=True)
     test.replace(-1,np.nan,inplace=True)
-    train.fillna(method='pad',inplace=True)
-    test.fillna(method='pad',inplace=True)
+    train.interpolate(inplace=True)
+    test.interpolate(inplace=True)
 
 
     train=train[train['TERMINALNO'] <= (train['TERMINALNO'].max())]
