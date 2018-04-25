@@ -100,18 +100,18 @@ def height_feet(data):
     max_time = max_time[['TERMINALNO', 'TIME']].groupby(["TERMINALNO"]).max()
     # 速度统计特征
     speed_sta = data[['TERMINALNO', "SPEED"]].groupby(['TERMINALNO']).agg([np.mean, np.max])
-    # 平均下坡
-    height_down = data[['TERMINALNO', "TRIP_ID", "HEIGHT"]].groupby(["TERMINALNO", 'TRIP_ID'], as_index=False).agg(
-        maxSubArray)
-    height_down = height_down[['TERMINALNO', "HEIGHT"]].groupby(['TERMINALNO']).agg([np.mean, np.min])
-    # 平均上坡
-    height_up = data[['TERMINALNO', "TRIP_ID", "HEIGHT"]].groupby(["TERMINALNO", 'TRIP_ID'], as_index=False).agg(
-        minSubArray)
-    height_up = height_up[['TERMINALNO', "HEIGHT"]].groupby(['TERMINALNO']).agg([np.mean, np.max])
+    # # 平均下
+    # height_down = data[['TERMINALNO', "TRIP_ID", "HEIGHT"]].groupby(["TERMINALNO", 'TRIP_ID'], as_index=False).agg(
+    #     maxSubArray)
+    # height_down = height_down[['TERMINALNO', "HEIGHT"]].groupby(['TERMINALNO']).agg([np.mean, np.min])
+    # # 平均上坡
+    # height_up = data[['TERMINALNO', "TRIP_ID", "HEIGHT"]].groupby(["TERMINALNO", 'TRIP_ID'], as_index=False).agg(
+    #     minSubArray)
+    # height_up = height_up[['TERMINALNO', "HEIGHT"]].groupby(['TERMINALNO']).agg([np.mean, np.max])
 
-    train_data = pd.concat([train_data, height_sta, max_time, speed_sta, height_down,height_up], axis=1)
+    train_data = pd.concat([train_data, height_sta, max_time, speed_sta,], axis=1)
     train_data.columns = ['height_risk', 'direction_risk', "callstate_risk", "height_mean", "height_var", "max_time",
-                          "speed_mean", "speed_max", "down_mean", "down_min","up_mean","up_max"]
+                          "speed_mean", "speed_max",]
 
     return train_data
 

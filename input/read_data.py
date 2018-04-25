@@ -48,10 +48,10 @@ def read_data(train_path, test_path):
 
     train = pd.read_csv(train_path, encoding='utf8')
     test = pd.read_csv(test_path, encoding='utf8')
-    train.replace(-1,np.nan,inplace=True)
-    test.replace(-1,np.nan,inplace=True)
-    train.interpolate(inplace=True)
-    test.interpolate(inplace=True)
+    # train.replace(-1,np.nan,inplace=True)
+    # test.replace(-1,np.nan,inplace=True)
+    # train.interpolate(inplace=True)
+    # test.interpolate(inplace=True)
 
 
     train=train[train['TERMINALNO'] <= (train['TERMINALNO'].max())]
@@ -67,14 +67,16 @@ def read_data(train_path, test_path):
     test.sort_values(by=['TERMINALNO', 'TIME'], inplace=True)
     train.reset_index(drop=True, inplace=True)
     test.reset_index(drop=True, inplace=True)
+    train[['TERMINALNO']]=train[['TERMINALNO']].astype(int)
+    test[['TERMINALNO']]=test[['TERMINALNO']].astype(int)
 
-    # 对时间差超过一分钟的作为新的trip_id
+    train_user = train['TERMINALNO'].unique()
     train_trip_idlist = []
-    for TERMINALNO, group in train.groupby(['TERMINALNO']):
-
+    for TERMINALNO in train_user:
+        user_data = train.loc[train['TERMINALNO'] == TERMINALNO]
         trip_id = 1
-        temptime = group['TIME_STAMP'].iloc[0]
-        for index, row in group.iterrows():
+        temptime = user_data['TIME_STAMP'].iloc[0]
+        for index, row in user_data.iterrows():
             if row['TIME_STAMP'] - temptime <= 60:
                 train_trip_idlist.append(trip_id)
             else:
@@ -84,12 +86,13 @@ def read_data(train_path, test_path):
     train['TRIP_ID'] = train_trip_idlist
 
     # 对时间差超过一分钟的作为新的trip_id
+    test_user = test['TERMINALNO'].unique()
     test_trip_idlist = []
-    for TERMINALNO, group in test.groupby(['TERMINALNO']):
-
+    for TERMINALNO in test_user:
+        user_data = test.loc[test['TERMINALNO'] == TERMINALNO]
         trip_id = 1
-        temptime = group['TIME_STAMP'].iloc[0]
-        for index, row in group.iterrows():
+        temptime = user_data['TIME_STAMP'].iloc[0]
+        for index, row in user_data.iterrows():
             if row['TIME_STAMP'] - temptime <= 60:
                 test_trip_idlist.append(trip_id)
             else:
