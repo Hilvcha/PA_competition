@@ -24,11 +24,8 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data = pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                                       'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye',], index=train_user)
-    # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-    #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
-    #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
-    #                               np.float32, np.int8, np.int8, np.int8],index=train_user)
+                                       'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'], index=train_user)
+
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
         # 初始化 时间，方向变化
@@ -61,7 +58,7 @@ def build_time_features(data):
                 Zao = 1
             elif 17 <= p_time <= 19:
                 Wan = 1
-            elif 0 <= p_time < 6:
+            elif 0 <= p_time < 6 or p_time>22:
                 Sheye = 1
 
                 # 如果具有速度，且在打电话
@@ -87,6 +84,7 @@ def build_time_features(data):
                     height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
 
                 tempheight = row["HEIGHT"]
+                tempdir=row['DIRECTION']
 
             elif row["TIME_STAMP"] - tempTime > 60:
 
@@ -102,15 +100,21 @@ def build_time_features(data):
         speed_mean = user_data["SPEED"].mean()
 
         height_mean = user_data["HEIGHT"].mean()
+        height_var=user_data['HEIGHT'].var()
 
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
+        meanTime=sum(maxTimelist)/len(maxTimelist)
+        time_count=user_data['TIME_STAMP'].count()
+        Zao=Zao/time_count
+        Wan=Wan/time_count
+        Sheye=Sheye/time_count
 
         weekend=user_data['TIME_is_weekend'].mean()
         train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk, speed_max, speed_mean,
                                       height_mean,
                                       Zao,
-                                      Wan, Sheye,]
+                                      Wan, Sheye]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 

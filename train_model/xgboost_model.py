@@ -17,13 +17,13 @@ from conf.configure import Configure
 @time_this
 def xgboost_train(train_set, test_set,slices):
     train, test, train_label, test_index = merge_datasets(train_set, test_set,slices)
-    print(train.head(5))
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
     # print('train.', train.axes)
     # print(train.dtypes)
     print(train_label.shape, train.shape)
-    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
+    print(train.head(4))
+    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=200)
 
     d_train = xgb.DMatrix(x_train, label=y_train)
     # print(d_train)
@@ -56,6 +56,8 @@ def xgboost_train(train_set, test_set,slices):
     submit_df.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
     # print(submit_df)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)
+    importance = bst.get_fscore()
+    print(importance)
 
 
 if __name__ == '__main__':
