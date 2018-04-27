@@ -3,7 +3,11 @@
 import numpy as np
 import pandas as pd
 import math
-from utils.feature_utils import df_empty
+
+# remove warnings
+import warnings
+
+warnings.filterwarnings('ignore')
 
 
 def build_time_features(data):
@@ -24,7 +28,10 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data = pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
-                                       'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'], index=train_user)
+                                       'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye', 'longitude_mean',
+                                       'latitude_mean',
+                                       'longitude_var', 'latitude_var', 'longitude_span', 'latitude_span', ],
+                              index=train_user)
 
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
@@ -55,36 +62,32 @@ def build_time_features(data):
 
             p_time = row['TIME_hour']
             if 6 <= p_time <= 9:
-                Zao = 1
+                Zao += 1
             elif 17 <= p_time <= 19:
-                Wan = 1
-            elif 0 <= p_time < 6 or p_time>22:
-                Sheye = 1
+                Wan += 1
+            elif 0 <= p_time < 6 or p_time > 22:
+                Sheye += 1
 
-                # 如果具有速度，且在打电话
             if tempSpeed > 0 and row["CALLSTATE"] != 4:
 
-                # 人设打电话状态未知情况下，他的危机指数为 0.05
                 if row["CALLSTATE"] == 0:
                     phonerisk += math.exp(tempSpeed / 10) * 0.02
                 else:
                     phonerisk += math.exp(tempSpeed / 10)
 
-                # 根据时间行驶判断
             if row["TIME_STAMP"] - tempTime == 60:
                 maxTime += 60
                 tempTime = row["TIME_STAMP"]
 
-                # 判断方向变化程度与具有车速之间的危险系数
                 dir_change = (min(abs(row["DIRECTION"] - tempdir), abs(360 + tempdir - row["DIRECTION"])) / 90.0)
                 if tempSpeed != 0 and row["SPEED"] > 0:
                     dir_risk += math.pow((row["SPEED"] / 10), dir_change)
 
-                # 海拔变化大的情况下和速度的危险系数
+                    # 海拔变化大的情况下和速度的危险系数
                     height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
 
                 tempheight = row["HEIGHT"]
-                tempdir=row['DIRECTION']
+                tempdir = row['DIRECTION']
 
             elif row["TIME_STAMP"] - tempTime > 60:
 
@@ -100,21 +103,31 @@ def build_time_features(data):
         speed_mean = user_data["SPEED"].mean()
 
         height_mean = user_data["HEIGHT"].mean()
-        height_var=user_data['HEIGHT'].var()
+        height25 = user_data['HEIGHT'].quantile(0.25, interpolation='nearest')
+        height50 = user_data['HEIGHT'].quantile(0.50, interpolation='nearest')
+        height75 = user_data['HEIGHT'].quantile(0.75, interpolation='nearest')
+        height_var = user_data['HEIGHT'].var()
 
         maxTimelist.append(maxTime)
         maxTime = max(maxTimelist)
-        meanTime=sum(maxTimelist)/len(maxTimelist)
-        time_count=user_data['TIME_STAMP'].count()
-        Zao=Zao/time_count
-        Wan=Wan/time_count
-        Sheye=Sheye/time_count
+        meanTime = sum(maxTimelist) / len(maxTimelist)
+        time_count = user_data['TIME_STAMP'].count()
+        Zao = Zao / time_count
+        Wan = Wan / time_count
+        Sheye = Sheye / time_count
 
-        weekend=user_data['TIME_is_weekend'].mean()
+        longitude_mean = user_data['LONGITUDE'].mean()
+        longitude_var = user_data['LONGITUDE'].var()
+        longitude_span = user_data['LONGITUDE'].max() - user_data['LONGITUDE'].min()
+        latitude_mean = user_data['LATITUDE'].mean()
+        latitude_var = user_data['LATITUDE'].var()
+        latitude_span = user_data['LATITUDE'].max() - user_data['LATITUDE'].min()
+
+        weekend = user_data['TIME_is_weekend'].mean()
         train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk, speed_max, speed_mean,
-                                      height_mean,
-                                      Zao,
-                                      Wan, Sheye]
+                                      height_mean, Zao, Wan, Sheye, longitude_mean,
+                                      latitude_mean, longitude_var, latitude_var,
+                                      longitude_span, latitude_span, ]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 

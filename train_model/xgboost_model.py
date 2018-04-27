@@ -7,22 +7,11 @@ sys.path.append(module_path)
 
 from utils.feature_utils import time_this
 from sklearn.model_selection import train_test_split
-import numpy as np
-import pandas as pd
 import xgboost as xgb
-from train_model.get_datasets import merge_datasets
-from conf.configure import Configure
-
 
 @time_this
-def xgboost_train(train_set, test_set,slices):
-    train, test, train_label, test_index = merge_datasets(train_set, test_set,slices)
-    user_id = test.pop('TERMINALNO')
-    train.drop(['TERMINALNO'], axis=1, inplace=True)
-    # print('train.', train.axes)
-    # print(train.dtypes)
-    print(train_label.shape, train.shape)
-    print(train.head(4))
+def xgboost_train(train,train_label,test):
+
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=200)
 
     d_train = xgb.DMatrix(x_train, label=y_train)
@@ -47,18 +36,10 @@ def xgboost_train(train_set, test_set,slices):
     bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
     d_test = xgb.DMatrix(test)
     prediction = bst.predict(d_test)
-    # 这里会否有更好的拼接方式？
-    pred_arr = np.array(prediction)
-    pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
-    submit_df = pd.concat([user_id, pred_series], axis=1)
-    # print(submit_df)
-
-    submit_df.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
-    # print(submit_df)
-    submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)
     importance = bst.get_fscore()
     print(importance)
 
+    return prediction
 
 if __name__ == '__main__':
     print('========== xgboost 模型训练 ==========')
