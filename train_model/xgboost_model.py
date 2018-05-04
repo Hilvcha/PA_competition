@@ -12,11 +12,14 @@ import pandas as pd
 import xgboost as xgb
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
+from sklearn.model_selection import GridSearchCV
+from sklearn.cross_validation import train_test_split
+import seaborn as sns
 
 
 @time_this
-def xgboost_train(train_set, test_set,slices):
-    train, test, train_label, test_index = merge_datasets(train_set, test_set,slices)
+def xgboost_train(train_set, test_set, slices):
+    train, test, train_label, test_index = merge_datasets(train_set, test_set, slices)
     print(train.head(5))
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
@@ -33,15 +36,16 @@ def xgboost_train(train_set, test_set,slices):
         'colsample_bytree': 0.8,
         'eta': 0.05,
         'silent': 1,
-        # 'objective': 'reg:linear',
+        'objective': 'reg:linear',
         'eval_metric': 'rmse'
     }
 
-    num_round = 800
-    useTrainCV=False
-    cv_folds=5
+    num_round = 100
+    useTrainCV = 2
+    cv_folds = 5
 
-    if useTrainCV:
+    if useTrainCV == 0:
+        # 使用xgboost的cv
         clf = xgb.XGBRegressor(**param)
         xgb_param = clf.get_xgb_params()
         xgtrain = xgb.DMatrix(train, label=train_label)
@@ -55,7 +59,8 @@ def xgboost_train(train_set, test_set,slices):
         for i in range(len(train.columns)):
             print('{0}:{1}'.format(train.columns[i], clf.feature_importances_[i]))
         prediction = clf.predict(test)
-    else:
+    elif useTrainCV == 1:
+        # 简单交叉验证
         x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
 
         d_train = xgb.DMatrix(x_train, label=y_train)
@@ -66,7 +71,26 @@ def xgboost_train(train_set, test_set,slices):
         bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
         d_test = xgb.DMatrix(test)
         prediction = bst.predict(d_test)
+    elif useTrainCV == 2:
+       # sklearn网格搜索
+       ####  模型优化    cross-validation+grid search    ####
+        X_train, X_test, y_train, y_test = train_test_split(train, train_label, test_size=0.3,
+                                                            random_state=100)
+        # 构建参数组合
+        param_grid = {
+            'max_depth': range(2, 10, 2),
+            'min_child_weight': range(1, 10, 2)
+        }
+        grid_search = GridSearchCV(xgb.XGBRegressor(**param), param_grid,cv=5)
+        grid_search.fit(X_train, y_train)
+        results = pd.DataFrame(grid_search.cv_results_)
 
+        best = np.argmax(results.mean_test_score.values)
+        print("Best parameters: {}".format(grid_search.best_params_))
+        print("Best cross-validation score: {:.5f}".format(grid_search.best_score_))
+        print("Best estimator:\n{}".format(
+            grid_search.best_estimator_))
+        prediction = grid_search.predict(test)
     pred_arr = np.array(prediction)
     pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
     submit_df = pd.concat([user_id, pred_series], axis=1)
