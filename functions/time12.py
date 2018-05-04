@@ -4,7 +4,10 @@ import numpy as np
 import pandas as pd
 import math
 from utils.feature_utils import df_empty
+# remove warnings
+import warnings
 
+warnings.filterwarnings('ignore')
 
 def build_time_features(data):
     # train_addtime = train
@@ -23,25 +26,26 @@ def build_time_features(data):
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE
 
     train_user = data['TERMINALNO'].unique()
-    train_data = pd.DataFrame(columns=['TERMINALNO',  'call_risk', 'dir_risk', 'height_risk','time_max', 'speed_max',
-                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night',], index=train_user)
+    train_data = pd.DataFrame(columns=['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
+                                       'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye',], index=train_user)
     # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
     #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
     #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
     #                               np.float32, np.int8, np.int8, np.int8],index=train_user)
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
+        # 初始化 时间，方向变化
         tempTime = data["TIME_STAMP"].iloc[0]
         tempSpeed = data["SPEED"].iloc[0]
-        tempDir = data["DIRECTION"].iloc[0]
-        tempHeight = data["HEIGHT"].iloc[0]
+        tempdir = data["DIRECTION"].iloc[0]
+        tempheight = data["HEIGHT"].iloc[0]
 
-        # 每段行程总时间
-        time_max = 0
-        time_maxlist = []
+        # 根据时间信息判断最长时间
+        maxTime = 0
+        maxTimelist = []
 
-        # 通话危险随速度上升
-        call_risk = 0
+        # 用户行驶过程中，打电话危机上升
+        phonerisk = 0
 
         # Direction 突变超过
         dir_risk = 0
@@ -49,53 +53,52 @@ def build_time_features(data):
         # Height 高度的危险值
         height_risk = 0
         # 时间区间
-        am = 0
-        pm = 0
-        night = 0
+        Zao = 0
+        Wan = 0
+        Sheye = 0
 
         for index, row in user_data.iterrows():
 
             p_time = row['TIME_hour']
             if 6 <= p_time <= 9:
-                am += 1
+                Zao = 1
             elif 17 <= p_time <= 19:
-                pm += 1
-            elif 0 <= p_time < 6 or p_time>=22:
-                night += 1
+                Wan = 1
+            elif 0 <= p_time < 6:
+                Sheye = 1
 
                 # 如果具有速度，且在打电话
             if tempSpeed > 0 and row["CALLSTATE"] != 4:
 
                 # 人设打电话状态未知情况下，他的危机指数为 0.05
                 if row["CALLSTATE"] == 0:
-                    call_risk += math.exp(tempSpeed / 10) * 0.02
+                    phonerisk += math.exp(tempSpeed / 10) * 0.02
                 else:
-                    call_risk += math.exp(tempSpeed / 10)
+                    phonerisk += math.exp(tempSpeed / 10)
 
                 # 根据时间行驶判断
             if row["TIME_STAMP"] - tempTime == 60:
-                time_max += 60
+                maxTime += 60
                 tempTime = row["TIME_STAMP"]
 
                 # 判断方向变化程度与具有车速之间的危险系数
-                dir_change = (min(abs(row["DIRECTION"] - tempDir), abs(360 + tempDir - row["DIRECTION"])) / 90.0)
+                dir_change = (min(abs(row["DIRECTION"] - tempdir), abs(360 + tempdir - row["DIRECTION"])) / 90.0)
                 if tempSpeed != 0 and row["SPEED"] > 0:
                     dir_risk += math.pow((row["SPEED"] / 10), dir_change)
 
                 # 海拔变化大的情况下和速度的危险系数
-                    height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempHeight) / 100))
+                    height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempheight) / 100))
 
-                tempDir=row['DIRECTION']
-                tempHeight = row["HEIGHT"]
+                tempheight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
 
-                time_maxlist.append(time_max)
-                time_max = 0
+                maxTimelist.append(maxTime)
+                maxTime = 0
                 tempTime = row["TIME_STAMP"]
 
-                tempDir = row["DIRECTION"]
-                tempHeight = row["HEIGHT"]
+                tempdir = row["DIRECTION"]
+                tempheight = row["HEIGHT"]
                 tempSpeed = row["SPEED"]
 
         speed_max = user_data["SPEED"].max()
@@ -103,27 +106,14 @@ def build_time_features(data):
 
         height_mean = user_data["HEIGHT"].mean()
 
-        time_maxlist.append(time_max)
-        time_max = max(time_maxlist)
-
-        time_cout=len(user_data)
-        am=am/time_cout
-        pm=pm/time_cout
-        night=night/time_cout
-
-
-        longitude_mean = user_data['LONGITUDE'].mean()
-        longitude_var = user_data['LONGITUDE'].agg(np.var)
-        longitude_span = user_data['LONGITUDE'].max() - user_data['LONGITUDE'].min()
-        latitude_mean = user_data['LATITUDE'].mean()
-        latitude_var = user_data['LATITUDE'].agg(np.var)
-        latitude_span = user_data['LATITUDE'].max() - user_data['LATITUDE'].min()
+        maxTimelist.append(maxTime)
+        maxTime = max(maxTimelist)
 
         weekend=user_data['TIME_is_weekend'].mean()
-        train_data.loc[TERMINALNO] = [TERMINALNO,call_risk, dir_risk, height_risk, time_max,  speed_max, speed_mean,
+        train_data.loc[TERMINALNO] = [TERMINALNO, maxTime, phonerisk, dir_risk, height_risk, speed_max, speed_mean,
                                       height_mean,
-                                      am,
-                                      pm, night,]
+                                      Zao,
+                                      Wan, Sheye,]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 

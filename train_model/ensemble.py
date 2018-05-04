@@ -17,8 +17,9 @@ from train_model.xgboost_model import xgboost_train
 from train_model.lgb_model import lgb_train
 from train_model.liner_model import liner_train
 
+
 @time_this
-def averaging_model(train_set, test_set, slices,n=0.7):
+def averaging_model(train_set, test_set, slices, n=0.7):
     train, test, train_label, test_index = merge_datasets(train_set, test_set, slices)
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
@@ -26,10 +27,11 @@ def averaging_model(train_set, test_set, slices,n=0.7):
     # print(train.dtypes)
     print(train_label.shape, train.shape)
     print(train.head(4))
-    prediction1=xgboost_train(train,train_label,test)
-    prediction2=lgb_train(train,train_label,test)
-    prediction3=liner_train(train,train_label,test)
-    pred_arr = prediction1*n+prediction2*(1-n)+prediction3*(1-n)
+
+    pred_lgb = lgb_train(train, train_label, test)
+    pred_xgb = xgboost_train(train, train_label, test)
+    pred_arr = pred_lgb
+
     pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
     submit_df = pd.concat([user_id, pred_series], axis=1)
     # print(submit_df)
@@ -37,7 +39,6 @@ def averaging_model(train_set, test_set, slices,n=0.7):
     submit_df.rename(columns={'TERMINALNO': 'Id'}, inplace=True)
     # print(submit_df)
     submit_df.to_csv(path_or_buf=Configure.submit_result_path, sep=',', index=None)
-
 
 
 if __name__ == '__main__':

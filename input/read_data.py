@@ -50,7 +50,6 @@ def read_data(train_path, test_path):
     test = pd.read_csv(test_path, encoding='utf8')
     # train.replace(-1,np.nan,inplace=True)
     # test.replace(-1,np.nan,inplace=True)
-
     # train.interpolate(inplace=True)
     # test.interpolate(inplace=True)
 
@@ -71,36 +70,36 @@ def read_data(train_path, test_path):
     train[['TERMINALNO']]=train[['TERMINALNO']].astype(int)
     test[['TERMINALNO']]=test[['TERMINALNO']].astype(int)
 
-    train_user = train['TERMINALNO'].unique()
-    train_trip_idlist = []
-    for TERMINALNO in train_user:
-        user_data = train.loc[train['TERMINALNO'] == TERMINALNO]
-        trip_id = 1
-        temptime = user_data['TIME_STAMP'].iloc[0]
-        for index, row in user_data.iterrows():
-            if row['TIME_STAMP'] - temptime <= 60:
-                train_trip_idlist.append(trip_id)
-            else:
-                trip_id += 1
-                train_trip_idlist.append(trip_id)
-            temptime = row['TIME_STAMP']
-    train['TRIP_ID'] = train_trip_idlist
-
-    # 对时间差超过一分钟的作为新的trip_id
-    test_user = test['TERMINALNO'].unique()
-    test_trip_idlist = []
-    for TERMINALNO in test_user:
-        user_data = test.loc[test['TERMINALNO'] == TERMINALNO]
-        trip_id = 1
-        temptime = user_data['TIME_STAMP'].iloc[0]
-        for index, row in user_data.iterrows():
-            if row['TIME_STAMP'] - temptime <= 60:
-                test_trip_idlist.append(trip_id)
-            else:
-                trip_id += 1
-                test_trip_idlist.append(trip_id)
-            temptime = row['TIME_STAMP']
-    test['TRIP_ID'] = test_trip_idlist
+    # train_user = train['TERMINALNO'].unique()
+    # train_trip_idlist = []
+    # for TERMINALNO in train_user:
+    #     user_data = train.loc[train['TERMINALNO'] == TERMINALNO]
+    #     trip_id = 1
+    #     temptime = user_data['TIME_STAMP'].iloc[0]
+    #     for index, row in user_data.iterrows():
+    #         if row['TIME_STAMP'] - temptime <= 60:
+    #             train_trip_idlist.append(trip_id)
+    #         else:
+    #             trip_id += 1
+    #             train_trip_idlist.append(trip_id)
+    #         temptime = row['TIME_STAMP']
+    # train['TRIP_ID'] = train_trip_idlist
+    #
+    # # 对时间差超过一分钟的作为新的trip_id
+    # test_user = test['TERMINALNO'].unique()
+    # test_trip_idlist = []
+    # for TERMINALNO in test_user:
+    #     user_data = test.loc[test['TERMINALNO'] == TERMINALNO]
+    #     trip_id = 1
+    #     temptime = user_data['TIME_STAMP'].iloc[0]
+    #     for index, row in user_data.iterrows():
+    #         if row['TIME_STAMP'] - temptime <= 60:
+    #             test_trip_idlist.append(trip_id)
+    #         else:
+    #             trip_id += 1
+    #             test_trip_idlist.append(trip_id)
+    #         temptime = row['TIME_STAMP']
+    # test['TRIP_ID'] = test_trip_idlist
 
     # 删除只有一分钟记录的行程
     # train_data = train[['TERMINALNO', 'TRIP_ID', 'HEIGHT']].groupby(['TERMINALNO', 'TRIP_ID'], as_index=False).count()
