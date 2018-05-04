@@ -13,8 +13,7 @@ import xgboost as xgb
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
 from sklearn.model_selection import GridSearchCV
-from sklearn.cross_validation import train_test_split
-import seaborn as sns
+
 
 
 @time_this
@@ -36,29 +35,36 @@ def xgboost_train(train_set, test_set, slices):
         'colsample_bytree': 0.8,
         'eta': 0.05,
         'silent': 1,
-        'objective': 'reg:linear',
-        'eval_metric': 'rmse'
+        # 'objective': 'reg:linear',
+        'eval_metric': 'auc'
     }
 
     num_round = 100
-    useTrainCV = 2
+    useTrainCV = 0
     cv_folds = 5
 
     if useTrainCV == 0:
-        # 使用xgboost的cv
-        clf = xgb.XGBRegressor(**param)
+        # 使用xgboost的cv(二分类)
+        clf = xgb.XGBClassifier(**param)
         xgb_param = clf.get_xgb_params()
-        xgtrain = xgb.DMatrix(train, label=train_label)
+        label=[]
+        for i in train_label:
+            if i==0:
+                label.append(0)
+            else:
+                label.append(1)
+        xgtrain = xgb.DMatrix(train, label=label)
         cvresult = xgb.cv(xgb_param, xgtrain, num_boost_round=clf.get_params()['n_estimators'], nfold=cv_folds,
-                          metrics='rmse', early_stopping_rounds=800)
+                          metrics='auc', early_stopping_rounds=200)
         clf.set_params(n_estimators=cvresult.shape[0])
 
         # Fit the algorithm on the data
-        clf.fit(train, train_label, eval_metric='rmse')
+        clf.fit(train, train_label, eval_metric='auc')
 
         for i in range(len(train.columns)):
             print('{0}:{1}'.format(train.columns[i], clf.feature_importances_[i]))
         prediction = clf.predict(test)
+        prediction = clf.predict_proba(test)[:,1]
     elif useTrainCV == 1:
         # 简单交叉验证
         x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
@@ -91,6 +97,8 @@ def xgboost_train(train_set, test_set, slices):
         print("Best estimator:\n{}".format(
             grid_search.best_estimator_))
         prediction = grid_search.predict(test)
+
+
     pred_arr = np.array(prediction)
     pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
     submit_df = pd.concat([user_id, pred_series], axis=1)
