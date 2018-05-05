@@ -28,8 +28,8 @@ def xgboost_train(train_set, test_set, slices):
     param = {
         'learning_rate': 0.1,
         'n_estimators': 1000,
-        'max_depth': 4,
-        'min_child_weight': 2,
+        'max_depth': 3,
+        'min_child_weight': 5,
         'gamma': 0,
         'subsample': 0.8,
         'colsample_bytree': 0.8,
@@ -40,32 +40,10 @@ def xgboost_train(train_set, test_set, slices):
     }
 
     num_round = 100
-    useTrainCV = 0
+    useTrainCV = 1
     cv_folds = 5
 
     if useTrainCV == 0:
-        # 使用xgboost的cv(二分类)
-        clf = xgb.XGBClassifier(**param)
-        xgb_param = clf.get_xgb_params()
-        label=[]
-        for i in train_label:
-            if i==0:
-                label.append(0)
-            else:
-                label.append(1)
-        xgtrain = xgb.DMatrix(train, label=label)
-        cvresult = xgb.cv(xgb_param, xgtrain, num_boost_round=clf.get_params()['n_estimators'], nfold=cv_folds,
-                          metrics='auc', early_stopping_rounds=200)
-        clf.set_params(n_estimators=cvresult.shape[0])
-
-        # Fit the algorithm on the data
-        clf.fit(train, train_label, eval_metric='auc')
-
-        for i in range(len(train.columns)):
-            print('{0}:{1}'.format(train.columns[i], clf.feature_importances_[i]))
-        prediction = clf.predict(test)
-        prediction = clf.predict_proba(test)[:,1]
-    elif useTrainCV == 1:
         # 简单交叉验证
         x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
 
@@ -73,22 +51,34 @@ def xgboost_train(train_set, test_set, slices):
         # print(d_train)
         d_val = xgb.DMatrix(x_val, label=y_val)
 
-        eval_list = [(d_val, 'eval'), (d_train, 'train')]
+        eval_list = [(d_val,'v'), (d_train,'t')]
         bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
         d_test = xgb.DMatrix(test)
         prediction = bst.predict(d_test)
+
+    elif useTrainCV == 1:
+        # 使用xgboost的cv(二分类)
+        clf = xgb.XGBClassifier(**param)
+        train_label=train_label.map(lambda x:0 if (x == 0)  else 1)
+        print(train_label)
+        clf.fit(train, train_label, eval_metric='auc')
+
+        for i in range(len(train.columns)):
+            print('{0}:{1}'.format(train.columns[i], clf.feature_importances_[i]))
+        prediction = clf.predict(test)
+        prediction = clf.predict_proba(test)[:,1]
     elif useTrainCV == 2:
        # sklearn网格搜索
        ####  模型优化    cross-validation+grid search    ####
-        X_train, X_test, y_train, y_test = train_test_split(train, train_label, test_size=0.3,
-                                                            random_state=100)
+        # X_train, X_test, y_train, y_test = train_test_split(train, train_label, test_size=0.3,
+        #                                                     random_state=100)
         # 构建参数组合
         param_grid = {
-            'max_depth': range(2, 10, 2),
-            'min_child_weight': range(1, 10, 2)
+            'max_depth': range(3, 10, 2),
+            'min_child_weight': range(2, 10, 2)
         }
         grid_search = GridSearchCV(xgb.XGBRegressor(**param), param_grid,cv=5)
-        grid_search.fit(X_train, y_train)
+        grid_search.fit(train, train_label)
         results = pd.DataFrame(grid_search.cv_results_)
 
         best = np.argmax(results.mean_test_score.values)

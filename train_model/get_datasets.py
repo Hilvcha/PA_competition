@@ -26,8 +26,8 @@ def merge_datasets(train, test, slices):
     test_index = test_index.unique()
 
     # 取出训练与测试集中的用户列
-    train = pd.DataFrame(train_index, index=train_index)
-    test = pd.DataFrame(test_index, index=test_index)
+    train_data = pd.DataFrame(train_index, index=train_index)
+    test_data = pd.DataFrame(test_index, index=test_index)
 
     # 加载记载在configure列表中的特征，并且合并
     for feature_name in Configure.features:
@@ -36,13 +36,13 @@ def merge_datasets(train, test, slices):
         train_feature, test_feature = data_utils.load_features(feature_name, slices)
 
         print(train_feature.shape, test_feature.shape)
-        train = pd.merge(train, train_feature,
+        train_data = pd.merge(train_data, train_feature,
                          left_index=True,
                          right_index=True, how='left')
-        test = pd.merge(test, test_feature,
+        test_data = pd.merge(test_data, test_feature,
                         left_index=True,
                         right_index=True, how='left')
-    print(train.shape, test.shape, y_train.shape, test_index.shape)
+    print(train_data.shape, test_data.shape, y_train.shape, test_index.shape)
 
 
-    return train, test, y_train, test_index
+    return train_data, test_data, y_train, test_index

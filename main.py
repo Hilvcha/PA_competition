@@ -37,6 +37,6 @@ if __name__ == "__main__":
         save_all_features(trainSection, testSection,s)
 
     # liner_train(trainSet,testSet,slices)
-
+    # lgb_train(trainSet, testSet,slices)
     xgboost_train(trainSet, testSet,slices)
 

@@ -16,8 +16,8 @@ from conf.configure import Configure
 
 
 @time_this
-def lgb_train(train_set, test_set,slices):
-    train, test, train_label, test_index = merge_datasets(train_set, test_set,slices)
+def lgb_train(train_set, test_set, slices):
+    train, test, train_label, test_index = merge_datasets(train_set, test_set, slices)
     print(train.head(5))
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
@@ -28,17 +28,26 @@ def lgb_train(train_set, test_set,slices):
 
     train_data = lgb.Dataset(x_train, label=y_train)
     eval_data = lgb.Dataset(x_val, label=y_val)
-
+    learning_rate = 0.1
+    num_leaves = 15
+    min_data_in_leaf = 2000
+    feature_fraction = 0.6
+    num_boost_round = 10000
     param = {
-        # 'num_leaves': 31,
-        'num_trees': 64,
-        'metric': 'rmse',
-        # 'is_unbalance': 'true',
-        'verbose': -1,
-    }
+        "objective": "regression",
+        "boosting_type": "gbdt",
+        "learning_rate": 0.01,
+        'metric': 'auc',
+        "feature_fraction": 0.6,
+        "verbosity": -1,
+        "min_child_samples": 10,
+        "subsample": 0.9,
+        "num_leaves": 8,
 
+    }
+    watchlist=[train_data,eval_data]
     num_round = 200
-    bst = lgb.train(param, train_data, num_round, valid_sets=eval_data)
+    bst = lgb.train(param, train_data, num_round, valid_sets=watchlist,early_stopping_rounds=100,)
     prediction = bst.predict(test)
     # 这里会否有更好的拼接方式？
     pred_arr = np.array(prediction)

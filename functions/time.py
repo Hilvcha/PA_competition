@@ -23,8 +23,8 @@ def build_time_features(data):
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE
 
     train_user = data['TERMINALNO'].unique()
-    train_data = pd.DataFrame(columns=['TERMINALNO',  'call_risk', 'dir_risk', 'height_risk','time_max', 'speed_max',
-                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night',], index=train_user)
+    train_data = pd.DataFrame(columns=['TERMINALNO', 'call_risk', 'dir_risk', 'height_risk', 'time_max', 'speed_max',
+                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night', ], index=train_user)
     # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
     #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
     #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
@@ -60,7 +60,7 @@ def build_time_features(data):
                 am += 1
             elif 17 <= p_time <= 19:
                 pm += 1
-            elif 0 <= p_time < 6 or p_time>=22:
+            elif 0 <= p_time < 6:
                 night += 1
 
                 # 如果具有速度，且在打电话
@@ -82,10 +82,10 @@ def build_time_features(data):
                 if tempSpeed != 0 and row["SPEED"] > 0:
                     dir_risk += math.pow((row["SPEED"] / 10), dir_change)
 
-                # 海拔变化大的情况下和速度的危险系数
+                    # 海拔变化大的情况下和速度的危险系数
                     height_risk += math.pow(abs(row["SPEED"] - tempSpeed) / 10, (abs(row["HEIGHT"] - tempHeight) / 100))
 
-                tempDir=row['DIRECTION']
+                tempDir = row['DIRECTION']
                 tempHeight = row["HEIGHT"]
 
             elif row["TIME_STAMP"] - tempTime > 60:
@@ -106,11 +106,10 @@ def build_time_features(data):
         time_maxlist.append(time_max)
         time_max = max(time_maxlist)
 
-        time_cout=len(user_data)
-        am=am/time_cout
-        pm=pm/time_cout
-        night=night/time_cout
-
+        time_cout = len(user_data)
+        am = am / time_cout
+        pm = pm / time_cout
+        night = night / time_cout
 
         longitude_mean = user_data['LONGITUDE'].mean()
         longitude_var = user_data['LONGITUDE'].agg(np.var)
@@ -119,11 +118,11 @@ def build_time_features(data):
         latitude_var = user_data['LATITUDE'].agg(np.var)
         latitude_span = user_data['LATITUDE'].max() - user_data['LATITUDE'].min()
 
-        weekend=user_data['TIME_is_weekend'].mean()
-        train_data.loc[TERMINALNO] = [TERMINALNO,call_risk, dir_risk, height_risk, time_max,  speed_max, speed_mean,
+        weekend = user_data['TIME_is_weekend'].mean()
+        train_data.loc[TERMINALNO] = [TERMINALNO, call_risk, dir_risk, height_risk, time_max, speed_max, speed_mean,
                                       height_mean,
                                       am,
-                                      pm, night,]
+                                      pm, night, ]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 
