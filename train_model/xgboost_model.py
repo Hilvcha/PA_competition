@@ -60,7 +60,6 @@ def xgboost_train(train_set, test_set, slices):
         # 使用xgboost的cv(二分类)
         clf = xgb.XGBClassifier(**param)
         train_label=train_label.map(lambda x:0 if (x == 0)  else 1)
-        print(train_label)
         clf.fit(train, train_label, eval_metric='auc')
 
         for i in range(len(train.columns)):

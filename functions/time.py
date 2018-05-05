@@ -3,8 +3,7 @@
 import numpy as np
 import pandas as pd
 import math
-from utils.feature_utils import df_empty
-
+from math import radians, cos, sin, asin, sqrt
 
 def build_time_features(data):
     # train_addtime = train
@@ -24,7 +23,7 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data = pd.DataFrame(columns=['TERMINALNO', 'call_risk', 'dir_risk', 'height_risk', 'time_max', 'speed_max',
-                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night', ], index=train_user)
+                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night','call_0', 'call_1', 'call_2', 'call_3', 'call_4','hdis1', ], index=train_user)
     # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
     #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
     #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
@@ -106,10 +105,10 @@ def build_time_features(data):
         time_maxlist.append(time_max)
         time_max = max(time_maxlist)
 
-        time_cout = len(user_data)
-        am = am / time_cout
-        pm = pm / time_cout
-        night = night / time_cout
+        record_cout = user_data.shape[0]
+        am = am / record_cout
+        pm = pm / record_cout
+        night = night / record_cout
 
         longitude_mean = user_data['LONGITUDE'].mean()
         longitude_var = user_data['LONGITUDE'].agg(np.var)
@@ -118,11 +117,27 @@ def build_time_features(data):
         latitude_var = user_data['LATITUDE'].agg(np.var)
         latitude_span = user_data['LATITUDE'].max() - user_data['LATITUDE'].min()
 
+        # 各种通话状态占比
+        call_0 = user_data.loc[user_data['CALLSTATE'] == 0].shape[0] / float(record_cout)
+        call_1 = user_data.loc[user_data['CALLSTATE'] == 1].shape[0] / float(record_cout)
+        call_2 = user_data.loc[user_data['CALLSTATE'] == 2].shape[0] / float(record_cout)
+        call_3 = user_data.loc[user_data['CALLSTATE'] == 3].shape[0] / float(record_cout)
+        call_4 = user_data.loc[user_data['CALLSTATE'] == 4].shape[0] / float(record_cout)
+
+        # 地点特征
+        startlong = user_data['LONGITUDE'].iloc[0]
+        startlat = user_data['LATITUDE'].iloc[0]
+        hdis1 = haversine1(startlong, startlat, 113.9177317, 22.54334333)  # 距离某一点的距离
+        if 'Y' in data.columns:
+            target=user_data['Y'].iloc[0]
+        else:
+            target=-1.0
+
         weekend = user_data['TIME_is_weekend'].mean()
+
         train_data.loc[TERMINALNO] = [TERMINALNO, call_risk, dir_risk, height_risk, time_max, speed_max, speed_mean,
-                                      height_mean,
-                                      am,
-                                      pm, night, ]
+                                      height_mean,am, pm, night,
+                                      call_0, call_1, call_2, call_3, call_4, hdis1,]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 
@@ -130,3 +145,18 @@ def build_time_features(data):
     # TERMINALNO, TIME, TRIP_ID, LONGITUDE, LATITUDE, DIRECTION, HEIGHT, SPEED, CALLSTATE
 
     return train_data
+
+def haversine1(lon1, lat1, lon2, lat2):  # 经度 1，纬度 1，经度 2，纬度 2 （十进制度数）
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+    """
+    # 将十进制度数转化为弧度
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    # haversine 公式
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # 地球平均半径，单位为公里
+    return c * r * 1000
