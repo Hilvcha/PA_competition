@@ -40,7 +40,7 @@ def xgboost_train(train_set, test_set, slices):
     }
 
     num_round = 100
-    useTrainCV = 1
+    useTrainCV = 0
     cv_folds = 5
 
     if useTrainCV == 0:

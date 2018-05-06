@@ -23,7 +23,8 @@ def build_time_features(data):
 
     train_user = data['TERMINALNO'].unique()
     train_data = pd.DataFrame(columns=['TERMINALNO', 'call_risk', 'dir_risk', 'height_risk', 'time_max', 'speed_max',
-                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night','call_0', 'call_1', 'call_2', 'call_3', 'call_4','hdis1', ], index=train_user)
+                                       'speed_mean', 'height_mean', 'am', 'pm', 'all_night',
+                                       ], index=train_user)
     # train_data = df_empty(['TERMINALNO', 'maxTime', 'phonerisk', 'dir_risk', 'height_risk', 'speed_max',
     #                        'speed_mean', 'height_mean', 'Zao', 'Wan', 'Sheye'],
     #                       dtypes=[np.int64, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32,
@@ -137,7 +138,7 @@ def build_time_features(data):
 
         train_data.loc[TERMINALNO] = [TERMINALNO, call_risk, dir_risk, height_risk, time_max, speed_max, speed_mean,
                                       height_mean,am, pm, night,
-                                      call_0, call_1, call_2, call_3, call_4, hdis1,]
+                                     ]
     train_data = train_data.astype(float)
     train_data[['TERMINALNO']] = train_data[['TERMINALNO']].astype(int)
 
