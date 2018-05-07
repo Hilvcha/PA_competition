@@ -9,6 +9,7 @@ from train_model.xgboost_model import xgboost_train
 from train_model.liner_model import liner_train
 from train_model.lgb_model import lgb_train
 # from train_model.catboost_model import cat_train
+from train_model.ensemble import averaging_model
 
 if __name__ == "__main__":
     now = time.localtime(time.time())
@@ -38,7 +39,8 @@ if __name__ == "__main__":
         save_all_features(trainSection, testSection,s)
 
     # liner_train(trainSet,testSet,slices)
-    # lgb_train(trainSet, testSet,slices)
-    xgboost_train(trainSet, testSet,slices)
+    lgb_train(trainSet, testSet,slices)
+    # xgboost_train(trainSet, testSet,slices)
+    # averaging_model(trainSet, testSet,slices)
     # cat_train(trainSet, testSet,slices)
 

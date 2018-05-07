@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 import lightgbm as lgb
-from utils.data_utils import merge_datasets
+from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
 from train_model.xgboost_model import xgboost_train
 from train_model.lgb_model import lgb_train
@@ -28,9 +28,50 @@ def averaging_model(train_set, test_set, slices, n=0.7):
     print(train_label.shape, train.shape)
     print(train.head(4))
 
-    pred_lgb = lgb_train(train, train_label, test)
-    pred_xgb = xgboost_train(train, train_label, test)
-    pred_arr = pred_lgb
+    x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
+
+    train_data = lgb.Dataset(x_train, label=y_train)
+    eval_data = lgb.Dataset(x_val, label=y_val)
+    param = {
+        "objective": "regression",
+        "boosting_type": "gbdt",
+        "learning_rate": 0.1,
+        'metric': 'auc',
+        "feature_fraction": 0.6,
+        "verbosity": -1,
+        "min_child_samples": 10,
+        "subsample": 0.9,
+        "num_leaves": 8
+    }
+    watchlist=[train_data,eval_data]
+    num_round = 200
+    bst = lgb.train(param, train_data, num_round, valid_sets=watchlist,early_stopping_rounds=100,)
+    pred_lgb = bst.predict(test)
+
+    param = {
+        'learning_rate': 0.1,
+        'n_estimators': 1000,
+        'max_depth': 4,
+        'min_child_weight': 2,
+        'gamma': 0,
+        'subsample': 0.8,
+        'colsample_bytree': 0.8,
+        'eta': 0.05,
+        'silent': 1,
+        # 'objective': 'binary:logistic',
+        'eval_metric': 'auc'
+    }
+    num_round = 100
+    d_train = xgb.DMatrix(x_train, label=y_train)
+    # print(d_train)
+    d_val = xgb.DMatrix(x_val, label=y_val)
+
+    eval_list = [(d_val,'v'), (d_train,'t')]
+    bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
+    d_test = xgb.DMatrix(test)
+    pred_xgb = bst.predict(d_test)
+
+    pred_arr = pred_lgb*0.4+pred_xgb*0.6
 
     pred_series = pd.Series(pred_arr, name='Pred', index=test_index)
     submit_df = pd.concat([user_id, pred_series], axis=1)

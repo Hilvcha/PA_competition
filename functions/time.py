@@ -31,6 +31,11 @@ def build_time_features(data):
     #                               np.float32, np.int8, np.int8, np.int8],index=train_user)
     for TERMINALNO in train_user:
         user_data = data.loc[data['TERMINALNO'] == TERMINALNO]
+
+        user_data['DIRECTION'].replace(-1,user_data["DIRECTION"].mean(),inplace=True)
+        user_data['SPEED'].replace(-1,user_data["SPEED"].mean(),inplace=True)
+
+
         tempTime = data["TIME_STAMP"].iloc[0]
         tempSpeed = data["SPEED"].iloc[0]
         tempDir = data["DIRECTION"].iloc[0]
