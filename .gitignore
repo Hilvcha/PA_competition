@@ -11,7 +11,7 @@ datasets/
 cleaned/
 features/
 model/
-
+catboost_info/
 # origin data files: you can get from start.sh
 train.csv
 test.csv

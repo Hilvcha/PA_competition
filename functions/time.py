@@ -132,7 +132,7 @@ def build_time_features(data):
         if 'Y' in data.columns:
             target=user_data['Y'].iloc[0]
         else:
-            target=-1.0
+            target=np.nan
 
         weekend = user_data['TIME_is_weekend'].mean()
 

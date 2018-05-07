@@ -13,17 +13,27 @@ import xgboost as xgb
 import lightgbm as lgb
 from train_model.get_datasets import merge_datasets
 from conf.configure import Configure
+from sklearn.preprocessing import StandardScaler
 
+# 标准化，返回值为标准化后的数据
 
 @time_this
 def lgb_train(train_set, test_set, slices):
     train, test, train_label, test_index = merge_datasets(train_set, test_set, slices)
     print(train.head(5))
+
+
+
     user_id = test.pop('TERMINALNO')
     train.drop(['TERMINALNO'], axis=1, inplace=True)
     # print('train.', train.axes)
     # print(train.dtypes)
     print(train_label.shape, train.shape)
+    # train=StandardScaler().fit_transform(train)
+    # test=StandardScaler().fit_transform(test)
+    # print(train)
+    # print(test)
+
     x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
 
     train_data = lgb.Dataset(x_train, label=y_train)

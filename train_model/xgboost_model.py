@@ -28,14 +28,14 @@ def xgboost_train(train_set, test_set, slices):
     param = {
         'learning_rate': 0.1,
         'n_estimators': 1000,
-        'max_depth': 3,
-        'min_child_weight': 5,
+        'max_depth': 4,
+        'min_child_weight': 2,
         'gamma': 0,
         'subsample': 0.8,
         'colsample_bytree': 0.8,
         'eta': 0.05,
         'silent': 1,
-        # 'objective': 'reg:linear',
+        # 'objective': 'binary:logistic',
         'eval_metric': 'auc'
     }
 
@@ -58,14 +58,21 @@ def xgboost_train(train_set, test_set, slices):
 
     elif useTrainCV == 1:
         # 使用xgboost的cv(二分类)
-        clf = xgb.XGBClassifier(**param)
+        # clf = xgb.XGBClassifier(**param,)
         train_label=train_label.map(lambda x:0 if (x == 0)  else 1)
-        clf.fit(train, train_label, eval_metric='auc')
+        x_train, x_val, y_train, y_val = train_test_split(train, train_label, test_size=0.3, random_state=100)
+        d_train = xgb.DMatrix(x_train, label=y_train)
+        d_val = xgb.DMatrix(x_val, label=y_val)
 
+        eval_list = [(d_val,'v'), (d_train,'t')]
+        bst = xgb.train(param, d_train, num_round, eval_list, early_stopping_rounds=100)
+
+        d_test = xgb.DMatrix(test)
+        prediction = bst.predict(d_test)
         for i in range(len(train.columns)):
-            print('{0}:{1}'.format(train.columns[i], clf.feature_importances_[i]))
-        prediction = clf.predict(test)
-        prediction = clf.predict_proba(test)[:,1]
+            print('{0}:{1}'.format(train.columns[i], bst.feature_importances_[i]))
+        # prediction = bst.predict(test)
+        prediction = bst.predict_proba(test)[:,1]
     elif useTrainCV == 2:
        # sklearn网格搜索
        ####  模型优化    cross-validation+grid search    ####

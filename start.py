@@ -22,7 +22,7 @@ def del_last_column(input_file, output_file):
 
 if __name__ == '__main__':
     # install all requirements by pip
-    pip.main(['install', '-r', 'requirements.txt'])
+    # pip.main(['install', '-r', 'requirements.txt'])
 
     # download csv file from website
     download_csv('http://datafountain.int-yt.com/PINGAN-2018-train_demo.csv', 'train.csv')
