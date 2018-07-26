@@ -1,4 +1,13 @@
 # PA_competition
+2018平安产险数据建模大赛 驾驶行为预测驾驶风险 
+
+### 比赛链接
+
+* [2018平安产险数据建模大赛 驾驶行为预测驾驶风险 ](http://www.datafountain.cn/?u=7612594&&#/competitions/284/intro)
+* [数据下载](http://www.datafountain.cn/?u=7612594&&#/competitions/284/data-download)
+
+### RANK
+48/2749
 
 ## How to use 如何使用
 
